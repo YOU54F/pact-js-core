@@ -20,7 +20,7 @@ const { expect } = chai;
 
 const HOST = '127.0.0.1';
 
-const isWin = process.platform === 'win32';
+const isWin = process.platform === 'win32' || process.platform === 'darwin';
 
 describe('FFI integration test for the HTTP Consumer API', () => {
   setLogLevel('trace');
