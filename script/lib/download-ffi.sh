@@ -20,6 +20,7 @@ warn "Cleaning ffi directory $FFI_DIR"
 rm -rf "${FFI_DIR:?}/*"
 mkdir -p "$FFI_DIR/osxaarch64"
 mkdir -p "$FFI_DIR/linuxaarch64"
+mkdir -p "$FFI_DIR/windowsaarch64"
 
 function download_ffi_file {
   if [ -z "${1:-}" ]; then
@@ -66,6 +67,8 @@ fi
 
 download_ffi "windows-x86_64.dll.gz" "" "pact_ffi.dll.gz"
 download_ffi "windows-x86_64.dll.lib.gz" "" "pact_ffi.dll.lib.gz"
+download_ffi "windows-aarch64.dll.gz" "" "windowsaarch64/pact_ffi.dll.gz"
+download_ffi "windows-aarch64.dll.lib.gz" "" "windowsaarch64/pact_ffi.dll.lib.gz"
 
 download_ffi_file "pact.h" "pact.h"
 download_ffi_file "pact-cpp.h" "pact-cpp.h"

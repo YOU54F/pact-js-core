@@ -13,7 +13,7 @@
 
 # Pact-JS Core
 
-A wrapper for the [Pact](http://pact.io) [CLI Tools](https://github.com/pact-foundation/pact-ruby-standalone).
+A wrapper for the [Pact](http://pact.io) [CLI Tools](https://github.com/you54f/pact-ruby-standalone).
 
 <!-- TOC -->
 
@@ -42,6 +42,11 @@ A wrapper for the [Pact](http://pact.io) [CLI Tools](https://github.com/pact-fou
       - [Create Message Pacts](#create-message-pacts)
         - [Example](#example)
   - [CLI Tools](#cli-tools)
+  - [Windows Issues](#windows-issues)
+    - [Enable Long Paths](#enable-long-paths)
+  - [Contributing](#contributing)
+  - [Testing](#testing)
+  - [Questions?](#questions)
 
 <!-- /TOC -->
 
@@ -429,7 +434,7 @@ messageFactory.createMessage();
 
 ## CLI Tools
 
-This package also comes with the [Pact Standalone Tools](https://github.com/pact-foundation/pact-ruby-standalone/releases) available as linked binaries in the [standard](https://docs.npmjs.com/files/folders#executables) NPM installation directory (e..g. `./node_modules/.bin`).
+This package also comes with the [Pact Standalone Tools](https://github.com/you54f/pact-ruby-standalone/releases) available as linked binaries in the [standard](https://docs.npmjs.com/files/folders#executables) NPM installation directory (e..g. `./node_modules/.bin`).
 
 This means you may call them direct from scripts in your package json, for example:
 

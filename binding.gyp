@@ -16,10 +16,26 @@
       ],
       "conditions": [
         [
-          "OS=='win'",
+          "OS==\"win\" and target_arch !=\"arm64\"",
           {
             "libraries": [
               "<(module_root_dir)/ffi/pact_ffi.dll.lib"
+            ],
+            "defines": [
+              "_HAS_EXCEPTIONS=1"
+            ],
+            "msvs_settings": {
+              "VCCLCompilerTool": {
+                "ExceptionHandling": 1
+              }
+            }
+          }
+        ],
+        [
+          "OS==\"win\" and target_arch ==\"arm64\"",
+          {
+            "libraries": [
+              "<(module_root_dir)/ffi/windowsaarch64/pact_ffi.dll.lib"
             ],
             "defines": [
               "_HAS_EXCEPTIONS=1"

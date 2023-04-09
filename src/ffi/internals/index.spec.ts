@@ -6,9 +6,14 @@ const { expect } = chai;
 chai.use(chaiAsPromised);
 
 describe('ffi names', () => {
-  it('has the correct name for windows', () => {
+  it('has the correct name for windows intel', () => {
     expect(libName('pact_ffi', 'v0.0.1', 'x64', 'win32')).to.be.equal(
       'v0.0.1-pact_ffi-windows-x86_64.dll'
+    );
+  });
+  it('has the correct name for windows arm', () => {
+    expect(libName('pact_ffi', 'v0.0.1', 'arm64', 'win32')).to.be.equal(
+      'v0.0.1-pact_ffi-windows-aarch64.dll'
     );
   });
   it('has the correct name for linux intel', () => {

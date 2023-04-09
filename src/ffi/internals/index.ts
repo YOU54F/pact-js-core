@@ -26,6 +26,7 @@ const EXTENSION_LOOKUP = {
   'linux-x86_64': 'so',
   'linux-aarch64': 'so',
   'windows-x86_64': 'dll',
+  'windows-aarch64': 'dll',
 };
 
 export const libName = (
