@@ -30,6 +30,8 @@ describe('Pact Standalone', function forMocha() {
     expect(pact.pactFullPath).to.contain('pact');
     expect(pact.pactflowPath).to.contain('pactflow');
     expect(pact.pactflowFullPath).to.contain('pactflow');
+    expect(pact.pactPluginCliPath).to.contain('pact-plugin-cli');
+    expect(pact.pactPluginCliFullPath).to.contain('pact-plugin-cli');
   });
 
   it("should return the base directory of the project with 'cwd' (where the package.json file is)", () => {
@@ -95,6 +97,14 @@ describe('Pact Standalone', function forMocha() {
         it('pactflow full path', () => {
           expect(fs.existsSync(pact.pactflowFullPath)).to.be.true;
         });
+        it('pact-plugin-cli relative path', () => {
+          expect(fs.existsSync(path.resolve(basePath, pact.pactPluginCliPath))).to.be
+            .true;
+        });
+
+        it('pact-plugin-cli full path', () => {
+          expect(fs.existsSync(pact.pactPluginCliFullPath)).to.be.true;
+        });
       });
 
       describe('Linux X64', () => {
@@ -155,6 +165,15 @@ describe('Pact Standalone', function forMocha() {
         it('pactflow full path', () => {
           expect(fs.existsSync(pact.pactflowFullPath)).to.be.true;
         });
+
+        it('pact-plugin-cli relative path', () => {
+          expect(fs.existsSync(path.resolve(basePath, pact.pactPluginCliPath))).to.be
+            .true;
+        });
+
+        it('pact-plugin-cli full path', () => {
+          expect(fs.existsSync(pact.pactPluginCliFullPath)).to.be.true;
+        });
       });
     }
 
@@ -176,6 +195,10 @@ describe('Pact Standalone', function forMocha() {
         expect(pact.pactFullPath).to.contain('pact.bat');
         expect(pact.pactflowPath).to.contain('pactflow.bat');
         expect(pact.pactflowFullPath).to.contain('pactflow.bat');
+      });
+      it("should add '.exe' to the end of the binary names", () => {
+        expect(pact.pactPluginCliPath).to.contain('pact-plugin-cli.exe');
+        expect(pact.pactPluginCliFullPath).to.contain('pact-plugin-cli.exe');
       });
 
       it('broker relative path', () => {
@@ -228,6 +251,15 @@ describe('Pact Standalone', function forMocha() {
 
       it('pactflow full path', () => {
         expect(fs.existsSync(pact.pactflowPath)).to.be.true;
+      });
+
+      it('pact-plugin-cli relative path', () => {
+        expect(fs.existsSync(path.resolve(basePath, pact.pactPluginCliPath))).to.be
+          .true;
+      });
+
+      it('pact-plugin-cli full path', () => {
+        expect(fs.existsSync(pact.pactPluginCliFullPath)).to.be.true;
       });
     });
   });

@@ -18,6 +18,8 @@ export interface PactStandalone {
   pactFullPath: string;
   pactflowPath: string;
   pactflowFullPath: string;
+  pactPluginCliPath: string;
+  pactPluginCliFullPath: string;
 }
 
 export const standalone = (
@@ -26,6 +28,8 @@ export const standalone = (
 ): PactStandalone => {
   const binName = (name: string): string =>
     `${name}${pactEnvironment.isWindows(platform) ? '.bat' : ''}`;
+  const exeName = (name: string): string =>
+    `${name}${pactEnvironment.isWindows(platform) ? '.exe' : ''}`;
   const mock = binName('pact-mock-service');
   const message = binName('pact-message');
   const verify = binName('pact-provider-verifier');
@@ -33,6 +37,7 @@ export const standalone = (
   const stub = binName('pact-stub-service');
   const pact = binName('pact');
   const pactflow = binName('pactflow');
+  const pactPluginCli = exeName('pact-plugin-cli');
   const basePath = path.join(
     'standalone',
     getBinaryEntry(platform, arch).folderName,
@@ -60,6 +65,10 @@ export const standalone = (
     pactflowFullPath: path
       .resolve(pactEnvironment.cwd, basePath, pactflow)
       .trim(),
+    pactPluginCliPath: path.join(basePath, pactPluginCli),
+    pactPluginCliFullPath: path
+    .resolve(pactEnvironment.cwd, basePath, pactPluginCli)
+    .trim(),
     verifierPath: path.join(basePath, verify),
     verifierFullPath: path
       .resolve(pactEnvironment.cwd, basePath, verify)
