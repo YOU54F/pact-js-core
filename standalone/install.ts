@@ -1,7 +1,7 @@
 import chalk = require('chalk');
 
 // Get latest version from https://github.com/pact-foundation/pact-ruby-standalone/releases
-export const PACT_STANDALONE_VERSION = '1.91.0';
+export const PACT_STANDALONE_VERSION = '3.1.2.1-alpha';
 
 function makeError(msg: string): Error {
   return new Error(chalk.red(`Error while locating pact binary: ${msg}`));
@@ -16,13 +16,19 @@ export function createConfig(): Config {
         platform: 'win32',
         binary: `pact-${PACT_STANDALONE_VERSION}-win32.zip`,
         binaryChecksum: `pact-${PACT_STANDALONE_VERSION}-win32.zip${CHECKSUM_SUFFIX}`,
-        folderName: `win32-${PACT_STANDALONE_VERSION}`,
+        folderName: `windows-x64-${PACT_STANDALONE_VERSION}`,
       },
       {
         platform: 'darwin',
         binary: `pact-${PACT_STANDALONE_VERSION}-osx.tar.gz`,
         binaryChecksum: `pact-${PACT_STANDALONE_VERSION}-osx.tar.gz${CHECKSUM_SUFFIX}`,
-        folderName: `darwin-${PACT_STANDALONE_VERSION}`,
+        folderName: `darwin-arm64-${PACT_STANDALONE_VERSION}`,
+      },
+      {
+        platform: 'darwin',
+        binary: `pact-${PACT_STANDALONE_VERSION}-osx-arm64.tar.gz`,
+        binaryChecksum: `pact-${PACT_STANDALONE_VERSION}-osx-arm64.tar.gz${CHECKSUM_SUFFIX}`,
+        folderName: `darwin-arm64-${PACT_STANDALONE_VERSION}`,
       },
       {
         platform: 'linux',
@@ -30,6 +36,13 @@ export function createConfig(): Config {
         binary: `pact-${PACT_STANDALONE_VERSION}-linux-x86_64.tar.gz`,
         binaryChecksum: `pact-${PACT_STANDALONE_VERSION}-linux-x86_64.tar.gz${CHECKSUM_SUFFIX}`,
         folderName: `linux-x64-${PACT_STANDALONE_VERSION}`,
+      },
+      {
+        platform: 'linux',
+        arch: 'arm64',
+        binary: `pact-${PACT_STANDALONE_VERSION}-linux-arm64.tar.gz`,
+        binaryChecksum: `pact-${PACT_STANDALONE_VERSION}-linux-arm64.tar.gz${CHECKSUM_SUFFIX}`,
+        folderName: `linux-arm64-${PACT_STANDALONE_VERSION}`,
       },
     ],
   };
