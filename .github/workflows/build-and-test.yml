@@ -2,9 +2,9 @@ name: Build and test
 
 on:
   push:
-    branches: [master,pact-node-arm64]
+    branches: [pact-node-arm64,pact-node]
   pull_request:
-    branches: [master]
+    branches: [pact-node-arm64,pact-node]
   workflow_dispatch:
 
 jobs:

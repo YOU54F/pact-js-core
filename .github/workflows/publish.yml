@@ -4,7 +4,7 @@ on:
   repository_dispatch:
     types:
       - release-triggered
-
+  workflow_dispatch:
 jobs:
   release:
     runs-on: ubuntu-latest
