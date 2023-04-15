@@ -98,6 +98,9 @@ export class CanDeploy {
       `Asking broker at ${this.options.pactBroker} if it is possible to deploy`
     );
     const deferred = q.defer<CanDeployResponse | string>();
+    if (this.options.output === 'json') {
+      this.options.verbose = false;
+    }
     const instance = spawn.spawnBinary(
       pactStandalone.brokerFullPath,
       [
