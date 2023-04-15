@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [13.14.0](https://github.com/pact-foundation/pact-js-core/compare/v13.13.6...v13.14.0) (2023-04-15)
+
+
+### Features
+
+* add arm64 osx/linux standalone ([338107e](https://github.com/pact-foundation/pact-js-core/commit/338107e6d9eae900872f38b11938406a17d8b47d))
+* use arm64 pact-ruby-standalone binaries ([84d72f2](https://github.com/pact-foundation/pact-js-core/commit/84d72f22b65182f9e5d539ca09dc0167e8bef1be))
+
+
+### Fixes and Improvements
+
+* **test:** arm64 binary fixes for osx ([a63ee3c](https://github.com/pact-foundation/pact-js-core/commit/a63ee3cbee5671d0409ce85f75063ffe766aa42b))
+
 ### [13.13.6](https://github.com/pact-foundation/pact-js-core/compare/v13.13.5...v13.13.6) (2023-03-14)
 
 
