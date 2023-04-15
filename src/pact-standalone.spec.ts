@@ -40,7 +40,7 @@ describe('Pact Standalone', function forMocha() {
     if (!process.env['ONLY_DOWNLOAD_PACT_FOR_WINDOWS']) {
       describe('OSX X64', () => {
         beforeEach(() => {
-          pact = standalone('darwin','x86');
+          pact = standalone('darwin', 'x64');
         });
 
         it('broker relative path', () => {
@@ -158,7 +158,7 @@ describe('Pact Standalone', function forMocha() {
       });
       describe('OSX arm64', () => {
         beforeEach(() => {
-          pact = standalone('darwin','arm64');
+          pact = standalone('darwin', 'arm64');
         });
 
         it('broker relative path', () => {
@@ -274,8 +274,6 @@ describe('Pact Standalone', function forMocha() {
           expect(fs.existsSync(pact.pactflowFullPath)).to.be.true;
         });
       });
-
-      
     }
 
     describe('Windows', () => {

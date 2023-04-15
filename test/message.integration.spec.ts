@@ -14,8 +14,8 @@ chai.use(chaiAsPromised);
 const { expect } = chai;
 
 const isWin = process.platform === 'win32';
-const isOSX = process.platform === 'darwin';
-const isCI = process.env['CI'] === 'true';
+const isOSXArm64 = process.platform === 'darwin' && process.arch === 'arm64';
+// const isCI = process.env['CI'] === 'true';
 
 const getFeature = async (address: string, protoFile: string) => {
   const def = await load(protoFile);
@@ -100,9 +100,7 @@ describe('FFI integration test for the Message Consumer API', () => {
         message.givenWithParam('some state 2', 'state2 key', 'state2 val');
         message.withBinaryContents(
           bytes,
-          isWin || (isOSX && isCI)
-            ? 'application/octet-stream'
-            : 'application/gzip'
+          isWin || isOSXArm64 ? 'application/octet-stream' : 'application/gzip'
         );
         message.withMetadata('meta-key', 'meta-val');
 
