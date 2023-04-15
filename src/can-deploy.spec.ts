@@ -180,17 +180,18 @@ describe('CanDeploy Spec', () => {
         });
       });
 
-      it('should throw an error with a table result deployable false', () => {
+      it('should throw an error with a table result deployable false', done => {
         const opts: CanDeployOptions = {
           pactBroker: `http://localhost:${PORT}`,
           pacticipants: [{ name: 'FooFail', latest: 'tag' }],
         };
         const ding = canDeployFactory(opts);
 
-        return ding
+        ding
           .canDeploy()
           .then(() => expect.fail())
           .catch(message => expect(message).not.be.null);
+        done();
       });
     });
 
@@ -209,7 +210,7 @@ describe('CanDeploy Spec', () => {
         });
       });
 
-      it('should throw an error with a table result deployable false', () => {
+      it('should throw an error with a table result deployable false', done => {
         const opts: CanDeployOptions = {
           pactBroker: `http://localhost:${PORT}`,
           pacticipants: [{ name: 'FooFail', latest: 'tag' }],
@@ -217,24 +218,26 @@ describe('CanDeploy Spec', () => {
         };
         const ding = canDeployFactory(opts);
 
-        return ding
+        ding
           .canDeploy()
           .then(() => expect.fail())
           .catch(message => expect(message).not.be.null);
+        done();
       });
     });
 
-    it('should throw an error with a table result deployable false', () => {
+    it('should throw an error with a table result deployable false', done => {
       const opts: CanDeployOptions = {
         pactBroker: `http://localhost:${PORT}`,
         pacticipants: [{ name: 'FooFail', version: '4' }],
       };
       const ding = canDeployFactory(opts);
 
-      return ding
+      ding
         .canDeploy()
         .then(() => expect.fail())
         .catch(message => expect(message).not.be.null);
+      done();
     });
 
     it('should return success with a json result deployable true', done => {
@@ -251,7 +254,7 @@ describe('CanDeploy Spec', () => {
       });
     });
 
-    it('should throw an error with a json result deployable false', () => {
+    it('should throw an error with a json result deployable false', done => {
       const opts: CanDeployOptions = {
         pactBroker: `http://localhost:${PORT}`,
         pacticipants: [{ name: 'FooFail', version: '4' }],
@@ -259,10 +262,11 @@ describe('CanDeploy Spec', () => {
       };
       const ding = canDeployFactory(opts);
 
-      return ding
+      ding
         .canDeploy()
         .then(() => expect.fail())
         .catch(message => expect(message).not.be.null);
+      done();
     });
   });
 });

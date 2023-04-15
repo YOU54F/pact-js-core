@@ -114,6 +114,7 @@ export class CanDeploy {
 
       if (this.options.output === 'json') {
         try {
+          console.log('saf', output);
           const startIndex = output.findIndex((l: string | Buffer) =>
             l.toString().startsWith('{')
           );
