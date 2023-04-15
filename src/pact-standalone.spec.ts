@@ -1,24 +1,22 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-/* global describe:true, before:true, after:true, it:true, global:true, process:true */
 import * as fs from 'fs';
 import * as path from 'path';
 import * as chai from 'chai';
-import install from '../standalone/install';
 import pactEnvironment from './pact-environment';
 import { PactStandalone, standalone } from './pact-standalone';
+import install from '../standalone/install';
 
-const expect = chai.expect;
+const { expect } = chai;
 const basePath = pactEnvironment.cwd;
 
 // Needs to stay a function and not an arrow function to access mocha 'this' context
-describe('Pact Standalone', function() {
+describe('Pact Standalone', function forMocha() {
   // Set timeout to 10 minutes because downloading binaries might take a while.
   this.timeout(600000);
 
   let pact: PactStandalone;
 
   // reinstall the correct binary for the system for all other tests that might use it.
-  after(() => install());
+  // after(() => install());
 
   it('should return an object with cwd, file and fullPath properties that is platform specific', () => {
     pact = standalone();
@@ -34,6 +32,10 @@ describe('Pact Standalone', function() {
     expect(pact.verifierFullPath).to.contain('pact-provider-verifier');
     expect(pact.pactPath).to.contain('pact');
     expect(pact.pactFullPath).to.contain('pact');
+    expect(pact.pactflowPath).to.contain('pactflow');
+    expect(pact.pactflowFullPath).to.contain('pactflow');
+    expect(pact.pactPluginCliPath).to.contain('pact-plugin-cli');
+    expect(pact.pactPluginCliFullPath).to.contain('pact-plugin-cli');
   });
 
   it("should return the base directory of the project with 'cwd' (where the package.json file is)", () => {
@@ -41,108 +43,154 @@ describe('Pact Standalone', function() {
   });
 
   describe('Check if OS specific files are there', () => {
-    describe('OSX', () => {
-      before(() => install('darwin'));
+    if (!process.env['ONLY_DOWNLOAD_PACT_FOR_WINDOWS']) {
+      describe('OSX', () => {
+        // before(() => install('darwin'));
+        beforeEach(() => {
+          pact = standalone('darwin');
+        });
 
-      beforeEach(() => (pact = standalone('darwin')));
+        it('broker relative path', () => {
+          expect(fs.existsSync(path.resolve(basePath, pact.brokerPath))).to.be
+            .true;
+        });
 
-      it('broker relative path', () => {
-        expect(fs.existsSync(path.resolve(basePath, pact.brokerPath))).to.be
-          .true;
+        it('broker full path', () => {
+          expect(fs.existsSync(pact.brokerFullPath)).to.be.true;
+        });
+
+        it('mock service relative path', () => {
+          expect(fs.existsSync(path.resolve(basePath, pact.mockServicePath))).to
+            .be.true;
+        });
+
+        it('mock service full path', () => {
+          expect(fs.existsSync(pact.mockServiceFullPath)).to.be.true;
+        });
+
+        it('stub relative path', () => {
+          expect(fs.existsSync(path.resolve(basePath, pact.stubPath))).to.be
+            .true;
+        });
+
+        it('stub full path', () => {
+          expect(fs.existsSync(pact.stubFullPath)).to.be.true;
+        });
+
+        it('provider verifier relative path', () => {
+          expect(fs.existsSync(path.resolve(basePath, pact.verifierPath))).to.be
+            .true;
+        });
+
+        it('provider verifier full path', () => {
+          expect(fs.existsSync(pact.verifierFullPath)).to.be.true;
+        });
+
+        it('pact relative path', () => {
+          expect(fs.existsSync(path.resolve(basePath, pact.pactPath))).to.be
+            .true;
+        });
+
+        it('pact full path', () => {
+          expect(fs.existsSync(pact.pactFullPath)).to.be.true;
+        });
+        it('pactflow relative path', () => {
+          expect(fs.existsSync(path.resolve(basePath, pact.pactflowPath))).to.be
+            .true;
+        });
+
+        it('pactflow full path', () => {
+          expect(fs.existsSync(pact.pactflowFullPath)).to.be.true;
+        });
+        it('pact-plugin-cli relative path', () => {
+          expect(fs.existsSync(path.resolve(basePath, pact.pactPluginCliPath)))
+            .to.be.true;
+        });
+
+        it('pact-plugin-cli full path', () => {
+          expect(fs.existsSync(pact.pactPluginCliFullPath)).to.be.true;
+        });
       });
 
-      it('broker full path', () => {
-        expect(fs.existsSync(pact.brokerFullPath)).to.be.true;
+      describe('Linux X64', () => {
+        before(() => install('linux', 'x64'));
+
+        beforeEach(() => {
+          pact = standalone('linux', 'x64');
+        });
+
+        it('broker relative path', () => {
+          expect(fs.existsSync(path.resolve(basePath, pact.brokerPath))).to.be
+            .true;
+        });
+
+        it('broker full path', () => {
+          expect(fs.existsSync(pact.brokerFullPath)).to.be.true;
+        });
+
+        it('mock service relative path', () => {
+          expect(fs.existsSync(path.resolve(basePath, pact.mockServicePath))).to
+            .be.true;
+        });
+
+        it('mock service full path', () => {
+          expect(fs.existsSync(pact.mockServiceFullPath)).to.be.true;
+        });
+
+        it('stub relative path', () => {
+          expect(fs.existsSync(path.resolve(basePath, pact.stubPath))).to.be
+            .true;
+        });
+
+        it('stub full path', () => {
+          expect(fs.existsSync(pact.stubFullPath)).to.be.true;
+        });
+
+        it('provider verifier relative path', () => {
+          expect(fs.existsSync(path.resolve(basePath, pact.verifierPath))).to.be
+            .true;
+        });
+
+        it('provider verifier full path', () => {
+          expect(fs.existsSync(pact.verifierFullPath)).to.be.true;
+        });
+
+        it('pact relative path', () => {
+          expect(fs.existsSync(path.resolve(basePath, pact.pactPath))).to.be
+            .true;
+        });
+
+        it('pact full path', () => {
+          expect(fs.existsSync(pact.pactFullPath)).to.be.true;
+        });
+
+        it('pactflow relative path', () => {
+          expect(fs.existsSync(path.resolve(basePath, pact.pactflowPath))).to.be
+            .true;
+        });
+
+        it('pactflow full path', () => {
+          expect(fs.existsSync(pact.pactflowFullPath)).to.be.true;
+        });
+
+        it('pact-plugin-cli relative path', () => {
+          expect(fs.existsSync(path.resolve(basePath, pact.pactPluginCliPath)))
+            .to.be.true;
+        });
+
+        it('pact-plugin-cli full path', () => {
+          expect(fs.existsSync(pact.pactPluginCliFullPath)).to.be.true;
+        });
       });
-
-      it('mock service relative path', () => {
-        expect(fs.existsSync(path.resolve(basePath, pact.mockServicePath))).to
-          .be.true;
-      });
-
-      it('mock service full path', () => {
-        expect(fs.existsSync(pact.mockServiceFullPath)).to.be.true;
-      });
-
-      it('stub relative path', () => {
-        expect(fs.existsSync(path.resolve(basePath, pact.stubPath))).to.be.true;
-      });
-
-      it('stub full path', () => {
-        expect(fs.existsSync(pact.stubFullPath)).to.be.true;
-      });
-
-      it('provider verifier relative path', () => {
-        expect(fs.existsSync(path.resolve(basePath, pact.verifierPath))).to.be
-          .true;
-      });
-
-      it('provider verifier full path', () => {
-        expect(fs.existsSync(pact.verifierFullPath)).to.be.true;
-      });
-
-      it('pact relative path', () => {
-        expect(fs.existsSync(path.resolve(basePath, pact.pactPath))).to.be.true;
-      });
-
-      it('pact full path', () => {
-        expect(fs.existsSync(pact.pactFullPath)).to.be.true;
-      });
-    });
-
-    describe('Linux X64', () => {
-      before(() => install('linux', 'x64'));
-
-      beforeEach(() => (pact = standalone('linux', 'x64')));
-
-      it('broker relative path', () => {
-        expect(fs.existsSync(path.resolve(basePath, pact.brokerPath))).to.be
-          .true;
-      });
-
-      it('broker full path', () => {
-        expect(fs.existsSync(pact.brokerFullPath)).to.be.true;
-      });
-
-      it('mock service relative path', () => {
-        expect(fs.existsSync(path.resolve(basePath, pact.mockServicePath))).to
-          .be.true;
-      });
-
-      it('mock service full path', () => {
-        expect(fs.existsSync(pact.mockServiceFullPath)).to.be.true;
-      });
-
-      it('stub relative path', () => {
-        expect(fs.existsSync(path.resolve(basePath, pact.stubPath))).to.be.true;
-      });
-
-      it('stub full path', () => {
-        expect(fs.existsSync(pact.stubFullPath)).to.be.true;
-      });
-
-      it('provider verifier relative path', () => {
-        expect(fs.existsSync(path.resolve(basePath, pact.verifierPath))).to.be
-          .true;
-      });
-
-      it('provider verifier full path', () => {
-        expect(fs.existsSync(pact.verifierFullPath)).to.be.true;
-      });
-
-      it('pact relative path', () => {
-        expect(fs.existsSync(path.resolve(basePath, pact.pactPath))).to.be.true;
-      });
-
-      it('pact full path', () => {
-        expect(fs.existsSync(pact.pactFullPath)).to.be.true;
-      });
-    });
+    }
 
     describe('Windows', () => {
-      before(() => install('win32'));
-
-      beforeEach(() => (pact = standalone('win32')));
+      // before(() => {
+      //   before(() => install('win32'));
+      // });
+      beforeEach(() => {
+        pact = standalone('win32');
+      });
 
       it("should add '.bat' to the end of the binary names", () => {
         expect(pact.brokerPath).to.contain('pact-broker.bat');
@@ -155,9 +203,18 @@ describe('Pact Standalone', function() {
         expect(pact.verifierFullPath).to.contain('pact-provider-verifier.bat');
         expect(pact.pactPath).to.contain('pact.bat');
         expect(pact.pactFullPath).to.contain('pact.bat');
+        expect(pact.pactflowPath).to.contain('pactflow.bat');
+        expect(pact.pactflowFullPath).to.contain('pactflow.bat');
+      });
+      it("should add '.exe' to the end of the binary names", () => {
+        expect(pact.pactPluginCliPath).to.contain('pact-plugin-cli.exe');
+        expect(pact.pactPluginCliFullPath).to.contain('pact-plugin-cli.exe');
       });
 
       it('broker relative path', () => {
+        console.log('broker path', {
+          foo: path.resolve(basePath, pact.brokerPath),
+        });
         expect(fs.existsSync(path.resolve(basePath, pact.brokerPath))).to.be
           .true;
       });
@@ -198,6 +255,24 @@ describe('Pact Standalone', function() {
 
       it('pact full path', () => {
         expect(fs.existsSync(pact.pactFullPath)).to.be.true;
+      });
+
+      it('pactflow relative path', () => {
+        expect(fs.existsSync(path.resolve(basePath, pact.pactflowPath))).to.be
+          .true;
+      });
+
+      it('pactflow full path', () => {
+        expect(fs.existsSync(pact.pactflowPath)).to.be.true;
+      });
+
+      it('pact-plugin-cli relative path', () => {
+        expect(fs.existsSync(path.resolve(basePath, pact.pactPluginCliPath))).to
+          .be.true;
+      });
+
+      it('pact-plugin-cli full path', () => {
+        expect(fs.existsSync(pact.pactPluginCliFullPath)).to.be.true;
       });
     });
   });
