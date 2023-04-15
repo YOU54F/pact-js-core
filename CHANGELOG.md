@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.18.0](https://github.com/pact-foundation/pact-node/compare/v10.17.7...v10.18.0) (2023-04-15)
+
+
+### Features
+
+* add pactflow & pact-plugin-cli commands ([ff0d60d](https://github.com/pact-foundation/pact-node/commit/ff0d60d919e81830aed535e883076c941dbb359e))
+* arm64 osx+linux with Ruby 3.2.2 standalone ([94e24cd](https://github.com/pact-foundation/pact-node/commit/94e24cde9ee6e50d50d60a4618c4a5ab16cfd41e))
+
+
+### Fixes and Improvements
+
+* can i deploy --json + verbose = bork ([e8c83e5](https://github.com/pact-foundation/pact-node/commit/e8c83e565e4a88af0db72af13a38791e4402fc0f))
+
 ### [10.17.7](https://github.com/pact-foundation/pact-node/compare/v10.17.6...v10.17.7) (2022-12-22)
 
 
