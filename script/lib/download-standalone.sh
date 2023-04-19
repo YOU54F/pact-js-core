@@ -70,7 +70,7 @@ case ${detected_os} in
 "Windows"* | "MINGW64"*)
     echo 'using win32'
     os='win32'
-    download_standalone "pact-${STANDALONE_VERSION}-windows-x86_64.zip" "windows-x86_64-${STANDALONE_VERSION}.zip"
+    download_standalone "pact-${STANDALONE_VERSION}-windows-x86_64.zip" "windows-x64-${STANDALONE_VERSION}.zip"
     ;;
   *)
   echo "Sorry, you'll need to install the pact-ruby-standalone manually."

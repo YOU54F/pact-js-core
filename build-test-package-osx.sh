@@ -7,7 +7,7 @@ export NVM_DIR="$HOME/.nvm"
 
 arch=$(uname -m)
 platform="osx"
-for version in 16 18 19; do 
+for version in 14 16 18 19; do 
     uname -m
     rm -rf lib build ffi node_modules
     script/download-libs.sh
