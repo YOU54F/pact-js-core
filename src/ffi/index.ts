@@ -1,13 +1,14 @@
-
 import binary = require('@mapbox/node-pre-gyp');
-import path from 'path'
+import path from 'path';
 import logger, { DEFAULT_LOG_LEVEL } from '../logger';
 import { LogLevel } from '../logger/types';
 import { Ffi } from './types';
 
-const bindingPath = binary.find(path.resolve(path.join(__dirname,"../../package.json")));
+const bindingPath = binary.find(
+  path.resolve(path.join(__dirname, '../../package.json'))
+);
 // eslint-disable-next-line import/no-dynamic-require, @typescript-eslint/no-var-requires
-const ffiLib:Ffi = require(bindingPath);
+const ffiLib: Ffi = require(bindingPath);
 
 export const PACT_FFI_VERSION = '0.4.0';
 
