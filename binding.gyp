@@ -28,7 +28,11 @@
               "VCCLCompilerTool": {
                 "ExceptionHandling": 1
               }
-            }
+            },
+            "copies":[{
+                "files": [ "<(module_root_dir)/ffi/pact_ffi.dll"],
+                "destination": "<(module_path)"
+                }],
           }
         ],
         [
@@ -47,7 +51,11 @@
                 "-L<(module_root_dir)/ffi",
                 "-Wl,-rpath,@loader_path"
               ]
-            }
+            },
+            "copies":[{
+                "files": [ "<(module_root_dir)/ffi/libpact_ffi.dylib"],
+                "destination": "<(module_path)"
+                }],
           }
         ],
         [
@@ -63,10 +71,14 @@
             "link_settings": {
               "libraries": [
                 "-lpact_ffi",
-                "-L<(module_root_dir)/ffi/osxaarch64",
-                "-Wl,-rpath,@loader_path/osxaarch64"
+                "-L<(module_root_dir)/ffi",
+                "-Wl,-rpath,@loader_path"
               ]
-            }
+            },
+            "copies":[{
+                "files": [ "<(module_root_dir)/ffi/libpact_ffi.dylib"],
+                "destination": "<(module_path)"
+                }],
           }
         ],
         [
@@ -78,7 +90,11 @@
                 "-L<(module_root_dir)/ffi",
                 "-Wl,-rpath,'$$ORIGIN'"
               ]
-            }
+            },
+            "copies":[{
+                "files": [ "<(module_root_dir)/ffi/libpact_ffi.so"],
+                "destination": "<(module_path)"
+                }],
           }
         ],
         [
@@ -87,10 +103,14 @@
             "link_settings": {
               "libraries": [
                 "-lpact_ffi",
-                "-L<(module_root_dir)/ffi/linuxaarch64",
-                "-Wl,-rpath,'$$ORIGIN'/linuxaarch64"
+                "-L<(module_root_dir)/ffi",
+                "-Wl,-rpath,'$$ORIGIN'"
               ]
-            }
+            },
+            "copies":[{
+                "files": [ "<(module_root_dir)/ffi/libpact_ffi.so"],
+                "destination": "<(module_path)"
+                }],
           }
         ]
       ],
@@ -105,39 +125,10 @@
         "NAPI_CPP_EXCEPTIONS"
       ]
     },
-    # Copy the shared libraries into the build/Release folder for distribution
-    {
-      "target_name": "copy_release_artifacts",
-      "dependencies": ["pact"],
-      "type": "none",
-      "copies": [
-        {
-          # must use module_root_dir here, because it uses proper windows paths
-          "files": [
-            "<(module_root_dir)/ffi/libpact_ffi.dylib",
-            "<(module_root_dir)/ffi/libpact_ffi.so",
-            "<(module_root_dir)/ffi/pact_ffi.dll",
-          ],
-          "destination": "<(PRODUCT_DIR)"
-        },
-        {
-          "files": [
-            "<(module_root_dir)/ffi/osxaarch64/libpact_ffi.dylib",
-          ],
-          "destination": "<(PRODUCT_DIR)/osxaarch64"
-        },
-        {
-          "files": [
-            "<(module_root_dir)/ffi/linuxaarch64/libpact_ffi.so",
-          ],
-          "destination": "<(PRODUCT_DIR)/linuxaarch64"
-        }
-      ]
-    },
     # Need to set the library install name to enable the rpath settings to work on OSX
     {
       "target_name": "set_osx_install_name",
-      "dependencies": ["pact", "copy_release_artifacts"],
+      "dependencies": ["pact"],
       "type": "none",
       "target_conditions":[
         [
@@ -148,11 +139,28 @@
                 "action_name": "modify install_name on osx",
                 "inputs": ["<(module_root_dir)/build/Release/pact.node"],
                 "outputs": ["<(module_root_dir)/build/Release/pact.node"],
-                'action': ['install_name_tool', '-change', 'libpact_ffi.dylib', '@rpath/libpact_ffi.dylib', '<(module_root_dir)/build/Release/pact.node'],
+                'action': ['install_name_tool', '-change', 'libpact_ffi.dylib', '@rpath/libpact_ffi.dylib', '<(module_path)/pact.node'],
               }
             ]
           }
         ]
+      ]
+    },
+    # Uses node-pre-gyp to pre-create binaries, and utilise them for consumers 
+    # from published releases
+    {
+      "target_name": "action_after_build",
+      "type": "none",
+      "dependencies": [ "<(module_name)" ],
+      "copies": [
+        {
+          "files": [ "<(PRODUCT_DIR)/<(module_name).node" ],
+          "destination": "<(module_path)"
+        },
+        {
+          "files": [ "<(module_root_dir)/standalone" ],
+          "destination": "<(module_path)"
+        }
       ]
     }
   ]

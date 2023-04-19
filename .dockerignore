@@ -1,0 +1,5 @@
+.tmp
+bindings_dist
+build
+ffi
+standalone

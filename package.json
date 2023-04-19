@@ -3,7 +3,7 @@
   "version": "13.14.0",
   "description": "Core of @pact-foundation/pact. You almost certainly don't want to depend on this directly.",
   "main": "src/index.js",
-  "homepage": "https://github.com/pact-foundation/pact-js-core#readme",
+  "homepage": "https://github.com/you54f/pact-js-core#readme",
   "types": "src/index.d.ts",
   "bin": {
     "pact": "bin/pact.js",
@@ -29,7 +29,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/pact-foundation/pact-js-core.git"
+    "url": "https://github.com/YOU54F/pact-js-core.git"
   },
   "keywords": [
     "pact",
@@ -52,6 +52,7 @@
     "access": "public"
   },
   "dependencies": {
+    "@mapbox/node-pre-gyp": "^1.0.10",
     "@types/needle": "2.5.2",
     "bindings": "^1.5.0",
     "chalk": "4.1.2",
@@ -59,7 +60,7 @@
     "cross-spawn": "7.0.3",
     "mkdirp": "1.0.0",
     "needle": "2.8.0",
-    "node-addon-api": "^4.2.0",
+    "node-addon-api": "^4.3.0",
     "pino": "^8.7.0",
     "pino-pretty": "^9.1.1",
     "promise-timeout": "1.3.0",
@@ -113,6 +114,7 @@
     "form-data": "^4.0.0",
     "grpc-promise": "^1.4.0",
     "mocha": "^9.1.3",
+    "node-pre-gyp-github": "^1.4.4",
     "nodemon": "^2.0.4",
     "prettier": "^2.3.0",
     "protobufjs": "^6.11.2",
@@ -123,10 +125,10 @@
     "typescript": "4.7.4"
   },
   "scripts": {
-    "clean": "rimraf '{src,test,bin,standalone}/**/*.{js,map,d.ts}' 'package.zip' '.tmp' 'tmp'",
+    "clean": "rimraf '{src,test,bin}/**/!(node-pre-gyp).{js,map,d.ts}' 'package.zip' '.tmp' 'tmp'",
     "lint": "eslint . --ext .ts --config .eslintrc",
     "lint:fix": "npm run lint -- --fix",
-    "prebuild": "npm run clean && bash script/download-libs.sh",
+    "prebuild": "npm run clean",
     "build": "tsc --project tsconfig.build.json",
     "prerelease": "npm run snyk-protect",
     "release": "standard-version",
@@ -135,8 +137,13 @@
     "format:base": "prettier --parser typescript",
     "format:check": "npm run format:base -- --list-different \"{src,standalone,bin,test}/**/*.{ts,tsx}\"",
     "format:fix": "npm run format:base -- --write \"{src,standalone,bin,test}/**/*.{ts,tsx}\"",
-    "postinstall": "npm run native",
-    "native": "node-gyp rebuild -v"
+    "install": "node-pre-gyp install --fallback-to-build"
+  },
+  "binary": {
+    "module_name": "pact",
+    "module_path": "./lib/binding/",
+    "host": "https://github.com/YOU54F/pact-js-core/releases/download/",
+    "remote_path": "{version}"
   },
   "prettier": "@pact-foundation/pact-js-prettier-config",
   "standard-version": {

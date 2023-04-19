@@ -76,3 +76,10 @@ test/__testoutput__
 
 # jest mocks
 !__mocks__
+
+
+## bindings
+lib/
+bindings
+bindings_dist
+!node-pre-gyp.d.ts

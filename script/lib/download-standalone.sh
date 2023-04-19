@@ -40,19 +40,45 @@ function download_standalone {
 
 log "Downloading Ruby standalone ${STANDALONE_VERSION}"
 
-if [[ $(find "${STANDALONE_DIR}" -name "*${STANDALONE_VERSION}") ]]; then
-  log "Skipping download of Ruby standalone, as it exists"
-  exit 0
-fi
+# if [[ $(find "${STANDALONE_DIR}" -name "*${STANDALONE_VERSION}") ]]; then
+#   log "Skipping download of Ruby standalone, as it exists"
+#   exit 0
+# fi
 
-download_standalone "pact-${STANDALONE_VERSION}-windows-x86_64.zip"            "windows-x64-${STANDALONE_VERSION}.zip"
+rm -rf "${STANDALONE_DIR}"
+mkdir -p "${STANDALONE_DIR}"
 
-if [ -z "${ONLY_DOWNLOAD_PACT_FOR_WINDOWS:-}" ]; then
-  download_standalone "pact-${STANDALONE_VERSION}-osx-x86_64.tar.gz"           "darwin-x64-${STANDALONE_VERSION}.tar.gz"
-  download_standalone "pact-${STANDALONE_VERSION}-osx-arm64.tar.gz"           "darwin-arm64-${STANDALONE_VERSION}.tar.gz"
-  download_standalone "pact-${STANDALONE_VERSION}-linux-x86_64.tar.gz"  "linux-x64-${STANDALONE_VERSION}.tar.gz"
-  download_standalone "pact-${STANDALONE_VERSION}-linux-arm64.tar.gz"  "linux-arm64-${STANDALONE_VERSION}.tar.gz"
-fi
+detected_os=$(uname -sm)
+echo detected_os = $detected_os
+case ${detected_os} in
+'Linux arm64' | 'Linux aarch64')
+    echo 'using osx'
+    download_standalone "pact-${STANDALONE_VERSION}-linux-arm64.tar.gz"  "linux-arm64-${STANDALONE_VERSION}.tar.gz"
+    ;;
+'Linux x86_64' | "Linux"*)
+    echo 'using linux-x86_64'
+    download_standalone "pact-${STANDALONE_VERSION}-linux-x86_64.tar.gz"  "linux-x64-${STANDALONE_VERSION}.tar.gz"
+    ;;
+'Darwin arm64')
+    echo 'using osx'
+    download_standalone "pact-${STANDALONE_VERSION}-osx-arm64.tar.gz"  "darwin-arm64-${STANDALONE_VERSION}.tar.gz"
+    ;;
+'Darwin x86_64' | "Darwin"*)
+    echo 'using osx'
+    download_standalone "pact-${STANDALONE_VERSION}-osx-x86_64.tar.gz"  "darwin-x64-${STANDALONE_VERSION}.tar.gz"
+    ;;
+"Windows"* | "MINGW64"*)
+    echo 'using win32'
+    os='win32'
+    download_standalone "pact-${STANDALONE_VERSION}-windows-x86_64.zip" "windows-x86_64-${STANDALONE_VERSION}.zip"
+    ;;
+  *)
+  echo "Sorry, you'll need to install the pact-ruby-standalone manually."
+  echo "or add your os to the list"
+  exit 1
+    ;;
+esac
+
 
 # Write readme in the ffi folder
 cat << EOF > "$STANDALONE_DIR/README.md"

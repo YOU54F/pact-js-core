@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { getBinaryEntry } from '../standalone/install';
+import { getBinaryEntry } from './install';
 import pactEnvironment from './pact-environment';
 
 export interface PactStandalone {
@@ -34,6 +34,8 @@ export const standalone = (
   const pact = binName('pact');
   const pactflow = binName('pactflow');
   const basePath = path.join(
+    'lib',
+    'binding',
     'standalone',
     getBinaryEntry(platform, arch).folderName,
     'pact',
