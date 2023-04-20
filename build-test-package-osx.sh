@@ -7,14 +7,14 @@ export NVM_DIR="$HOME/.nvm"
 
 arch=$(uname -m)
 platform="osx"
-for version in 14 16 18 19; do 
+for version in 16 18 19; do 
     uname -m
     rm -rf lib build ffi node_modules
-    script/download-libs.sh
+    arch -$arch script/download-libs.sh
     nvm install $version
     nvm use $version
     node -e 'console.log(process.arch)'
-    npm install --build-from-source
+    npm ci --build-from-source
     npm run build
     npm test
     ./node_modules/.bin/node-pre-gyp rebuild

@@ -5,7 +5,7 @@ mkdir -p bindings
 mkdir -p bindings_dist
 platform="osx"
 for arch in arm64 amd64; do 
-    for version in 14 16 18 19; do 
+    for version in 16 18 19; do 
         docker build . \
             --build-arg=NODE_VERSION=$version \
             --build-arg=NODE_PRE_GYP_GITHUB_TOKEN \

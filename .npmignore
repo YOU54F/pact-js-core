@@ -83,7 +83,7 @@ script
 # bindings
 lib
 standalone
-ffi
+ffi/
 build
 # build-*.sh
 # Dockerfile
