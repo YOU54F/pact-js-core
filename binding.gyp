@@ -158,8 +158,8 @@
           "destination": "<(module_path)"
         },
         {
-          "files": [ "<(module_root_dir)/standalone" ],
-          "destination": "<(module_path)"
+          "files": [ "<(module_root_dir)/standalone/" ],
+          "destination": "<(module_path)/"
         }
       ]
     }

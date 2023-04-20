@@ -14,7 +14,7 @@ for version in 14 16 18 19; do
     nvm install $version
     nvm use $version
     node -e 'console.log(process.arch)'
-    npm install --build-from-source=pact
+    npm install --build-from-source
     npm run build
     npm test
     ./node_modules/.bin/node-pre-gyp rebuild

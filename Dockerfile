@@ -5,7 +5,7 @@ ENV NODE_PRE_GYP_GITHUB_TOKEN=$NODE_PRE_GYP_GITHUB_TOKEN
 WORKDIR /app
 COPY . .
 RUN script/download-libs.sh
-RUN npm install --build-from-source=pact
+RUN npm install --build-from-source
 RUN npm run build
 RUN npm test
 RUN ./node_modules/.bin/node-pre-gyp rebuild
