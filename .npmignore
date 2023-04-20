@@ -79,3 +79,11 @@ test
 
 # release scripts
 script
+
+# bindings
+lib
+standalone
+ffi
+build
+# build-*.sh
+# Dockerfile
