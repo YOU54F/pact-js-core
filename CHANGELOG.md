@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [13.16.1](https://github.com/YOU54F/pact-js-core/compare/v13.16.0...v13.16.1) (2023-04-20)
+
+
+### Fixes and Improvements
+
+* dont npmignore src/ffi folder ([1c08baf](https://github.com/YOU54F/pact-js-core/commit/1c08baf1935cff06af50625b81d6bada687ac336))
+
 ## [13.16.0](https://github.com/YOU54F/pact-js-core/compare/v13.14.0...v13.16.0) (2023-04-20)
 
 
