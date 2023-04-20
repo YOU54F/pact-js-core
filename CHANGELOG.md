@@ -1,6 +1,18 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
+
+## [13.16.0](https://github.com/YOU54F/pact-js-core/compare/v13.14.0...v13.16.0) (2023-04-20)
+
+
+### Features
+
+* node-pre-gyp pre built pact.node ([bdc76c4](https://github.com/YOU54F/pact-js-core/commit/bdc76c41a12bd1445f32b01ddbb18c663028ee6e))
+
+
+### Fixes and Improvements
+
+* Remove unusable external export of HTTPConfig, which removes the need to have needle types as a dependency ([f123204](https://github.com/YOU54F/pact-js-core/commit/f12320473aefdd51e6230e20256fcb61c661bf8d))
 
 ## [13.14.0](https://github.com/pact-foundation/pact-js-core/compare/v13.13.6...v13.14.0) (2023-04-15)
 
