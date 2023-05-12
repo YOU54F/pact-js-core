@@ -5,8 +5,7 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)" # Figure out where the script is running
 . "$SCRIPT_DIR"/../lib/robust-bash.sh
 
-bash script/download-libs.sh
-npm ci
+npm ci --ignore-scripts
 
 npm run format:check
 npm run lint

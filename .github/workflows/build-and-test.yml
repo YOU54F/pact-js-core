@@ -7,8 +7,45 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test-osx:
+  build:
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20]
+        os: [macos-latest,ubuntu-latest,windows-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: download-libs
+        if: runner.os != 'Windows'
+        run: script/download-libs.sh
+      - name: download-libs
+        if: runner.os == 'Windows'
+        run: script/download-libs.sh
+        env:
+          ONLY_DOWNLOAD_PACT_FOR_WINDOWS: true
+      - name: generate prebuild
+        run: |
+          npm ci --ignore-scripts
+          npx prebuildify --napi
+          tar -czf prebuilds-${{ runner.os }}.tar.gz prebuilds
+          ls
+      - name: Upload standalone packages
+        uses: actions/upload-artifact@v3
+        with:
+          name: prebuilds-${{ runner.os }}.tar.gz
+          path: prebuilds-${{ runner.os }}.tar.gz
+  test:
+    runs-on: ${{ matrix.os }}
+    needs: [build]
     defaults:
       run:
         shell: bash
@@ -20,10 +57,24 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: prebuilds-${{ runner.os }}.tar.gz
+      - name: process packaged artifact
+        run: tar xvf prebuilds-${{ runner.os }}.tar.gz
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - name: download-libs
+        if: runner.os != 'Windows'
+        run: script/download-libs.sh
+      - name: download-libs
+        if: runner.os == 'Windows'
+        run: script/download-libs.sh
+        env:
+          ONLY_DOWNLOAD_PACT_FOR_WINDOWS: true
       - run: script/ci/build-and-test.sh
         if: runner.os != 'Windows'
         env:

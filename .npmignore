@@ -79,3 +79,7 @@ test
 
 # release scripts
 script
+
+# FFI binaries
+ffi
+!prebuilds

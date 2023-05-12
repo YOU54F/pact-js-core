@@ -58,7 +58,9 @@ standalone/*
 !standalone/*.ts
 standalone/*.d.ts
 ffi/*
+!src/ffi
 !ffi/README.md
+prebuilds
 
 # Folders created during testing
 log
