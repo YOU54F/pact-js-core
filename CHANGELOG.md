@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [10.19.0](https://github.com/pact-foundation/pact-node/compare/v10.18.0...v10.19.0) (2023-05-18)
+
+
+### Features
+
+* pact-2.0.1 pact-ruby-standalone ([cf3913a](https://github.com/pact-foundation/pact-node/commit/cf3913a7276ef1194b0ddb8fb4aef5d005f99c5c))
+
 ## [10.18.0](https://github.com/pact-foundation/pact-node/compare/v10.17.7...v10.18.0) (2023-04-15)
 
 
