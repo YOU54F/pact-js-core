@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## 13.18.1 (2023-05-27)
+
+
+### Fixes and Improvements
+
+* ensure ffi not npm ignored ([8092c22](https://github.com/pact-foundation/pact-js-core/commit/8092c22b3a9a8714e85908d16dd0fa531613cb7e))
+
 ## 13.18.0 (2023-05-27)
 
 
