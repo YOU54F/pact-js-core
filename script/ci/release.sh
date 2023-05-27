@@ -20,7 +20,6 @@ REPO=${REPO:-you54f/pact-js-core}
 
 # It's easier to read the release notes
 # from the standard version tool before it runs
-npx -y commit-and-tag-version --dry-run
 RELEASE_NOTES="$(npx -y commit-and-tag-version --dry-run | awk 'BEGIN { flag=0 } /^---$/ { if (flag == 0) { flag=1 } else { flag=2 }; next } flag == 1')"
 echo "$RELEASE_NOTES"
 NEXT_VERSION=$(npx -y commit-and-tag-version --dry-run | grep 'tagging release' | grep -E -o "([0-9\.]+(-[a-z\.0-9]+)?)")
@@ -114,5 +113,5 @@ if [[ ${DRY_RUN:-} == 'true' ]]; then
   echo "not pushing tags as in dry run mode"
 else
   git push --follow-tags
-  gh release edit ${TAG} --title "Release ${TAG}" --notes ${RELEASE_NOTES} --draft=false --prerelease=false --target ${GIT_SHA}
+  gh release edit ${TAG} --title "Release ${TAG}" --repo ${REPO} --notes "${RELEASE_NOTES}" --draft=false --prerelease=false --target ${GIT_SHA}
 fi
