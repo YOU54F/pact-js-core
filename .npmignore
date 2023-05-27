@@ -83,3 +83,11 @@ script
 # FFI binaries
 ffi
 !prebuilds
+
+.cirrus
+.gitattributes
+DEVELOPER.md
+RELEASING.md
+test.js
+tsconfig.build.json
+tsconfig.json
