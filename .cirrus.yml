@@ -1,187 +1,49 @@
-env:
-  PACT_BROKER_FEATURES: publish_pacts_using_old_api
 
-BUILD_TEST_TASK_TEMPLATE: &BUILD_TEST_TASK_TEMPLATE
-  arch_check_script:
-    - uname -am
-  prebuild_script:
-    - node --version
-    - chmod +x script/**/* && chmod +x script/**
-    - script/download-libs.sh
-    - npm ci --ignore-scripts
-    - npx prebuildify --napi
-    - tar -czf prebuilds.tar.gz prebuilds
-    - ls
-    - rm -rf ffi build
-  test_20_script:
-    - ls
-    - node --version
-    - script/ci/build-and-test.sh
-    - ls
-    - npm run clean
-    - rm -rf node_modules
-    - ls
-  test_18_script:
-    - . $NVM_DIR/nvm.sh
-    - nvm install 18
-    - nvm use 18
-    - node --version
-    - script/ci/build-and-test.sh
-    - ls
-    - npm run clean
-    - rm -rf node_modules
-    - ls
-  test_16_script:
-    - . $NVM_DIR/nvm.sh
-    - nvm install 18
-    - nvm use 18
-    - node --version
-    - script/ci/build-and-test.sh
-    - ls
-    - npm run clean
-    - rm -rf node_modules
-    - ls
+INSTALL_GH_CLI: &INSTALL_GH_CLI
+  install_gh_cli_script: |
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+    && apt update \
+    && apt install gh -y
 
-linux_arm64_task:
+RELEASE: &RELEASE
+  release_script: ./script/ci/release.sh
   env:
-    NVM_DIR: /usr/local/nvm
+    GITHUB_TOKEN: ENCRYPTED[636f316600928de28b5c36027cc39d9796bc0d0eca2a181368f255ad61540f13bb38cdce09b6428774f315bbf45e0ada]
+    GH_PRE_RELEASE_UPLOAD: true 
+
+PREBUILD_AND_TEST: &PREBUILD_AND_TEST
+  prebuild_script: NODE_VERSION=20 script/ci/prebuild.sh
+  <<: *RELEASE
+  test_20_script:  NODE_VERSION=20 script/ci/build-and-test.sh && script/ci/clean.sh
+  test_18_script:  NODE_VERSION=18 script/ci/build-and-test.sh && script/ci/clean.sh
+  test_16_script:  NODE_VERSION=16 script/ci/build-and-test.sh && script/ci/clean.sh
+
+linux_arm_task:
+  env:
+    SET_NVM: "true"
   arm_container:
+  # container:
     image: node:20-slim
-  install_script:
-    - apt update --yes && apt install --yes curl python3 make build-essential g++ unzip zip
-    - curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash
-  << : *BUILD_TEST_TASK_TEMPLATE
+  cirrus_setup_script: chmod +x script/**/* && chmod +x script/**
+  setup_script: apt update --yes && apt install --yes curl python3 make build-essential g++ unzip zip libyaml-dev git
+  dry_run_check_script: npx --yes commit-and-tag-version --dry-run && git remote -v
+  pre_req_script: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.39.3/install.sh | bash
+  <<: *INSTALL_GH_CLI
+  <<: *PREBUILD_AND_TEST
   artifacts:
-    path: "prebuilds.tar.gz"
+    path: prebuilds/*.tar.gz
 
-linux_amd64_task:
-  env:
-    NVM_DIR: /usr/local/nvm
-  container:
-    image: node:20-slim
-  install_script:
-    - apt update --yes && apt install --yes curl python3 make build-essential g++ unzip zip 
-    - curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash
-  << : *BUILD_TEST_TASK_TEMPLATE
-  artifacts:
-    path: "prebuilds.tar.gz"
-
-macos_arm_prebuilder_task:
+macos_arm_task:
   macos_instance:
     image: ghcr.io/cirruslabs/macos-ventura-base:latest
   env:
-    PACT_BROKER_FEATURES: publish_pacts_using_old_api
-    NVM_DIR: ${HOME}/.nvm
-    PATH: ${NVM_DIR}:${PATH}
-  install_node_script:
-    - brew install nvm
-    - . $(brew --prefix nvm)/nvm.sh
-    - nvm install 20
-    - nvm install 18
-    - nvm install 16
-  prebuild_script:
-    - . $(brew --prefix nvm)/nvm.sh
-    - nvm use 20
-    - node --version
-    - chmod +x script/**/* && chmod +x script/**
-    - script/download-libs.sh
-    - npm ci --ignore-scripts
-    - npx prebuildify --napi
-    - tar -czf prebuilds.tar.gz prebuilds
-    - ls
-    - rm -rf ffi build 
-  test_20_script:
-    - . $(brew --prefix nvm)/nvm.sh
-    - nvm use 20
-    - node --version
-    - script/ci/build-and-test.sh
-    - ls
-    - npm run clean
-    - rm -rf node_modules
-    - ls
-  test_18_script:
-    - . $(brew --prefix nvm)/nvm.sh
-    - nvm use 18
-    - node --version
-    - script/ci/build-and-test.sh
-    - ls
-    - npm run clean
-    - rm -rf node_modules
-    - ls
-  test_16_script:
-    - . $(brew --prefix nvm)/nvm.sh
-    - nvm use 16
-    - node --version
-    - script/ci/build-and-test.sh
-    - ls
-    - npm run clean
-    - rm -rf node_modules
-    - ls
+    SET_NVM: "true"
+  cirrus_setup_script: chmod +x script/**/* && chmod +x script/**
+  dry_run_check_script: |
+    npx --yes commit-and-tag-version --dry-run && git remote -v
+  pre_req_script: brew install nvm
+  <<: *PREBUILD_AND_TEST
   artifacts:
-    path: "prebuilds.tar.gz"
-
-macos_x64_prebuilder_task:
-  macos_instance:
-    image: ghcr.io/cirruslabs/macos-ventura-base:latest
-  env:
-    PACT_BROKER_FEATURES: publish_pacts_using_old_api
-    NVS_HOME: ${HOME}/.nvs
-    PATH: ${NVS_HOME}:${PATH}
-  install_nvs_script: |
-    git clone https://github.com/jasongin/nvs "$NVS_HOME"
-    . "$NVS_HOME/nvs.sh" install
-  install_rosetta_script: softwareupdate --install-rosetta --agree-to-license
-  install_node_x64_script: | 
-    . "$NVS_HOME/nvs.sh"
-    nvs add 20/x64
-    nvs add 18/x64
-    nvs add 16/x64
-    nvs use 20/x64
-    file $(which node) | grep -e 'x64'
-    node --version
-  prebuild_script:
-    - ls
-    - . "$NVS_HOME/nvs.sh"
-    - nvs use 20/x64
-    - file $(which node) | grep -e 'x64'
-    - node --version
-    - chmod +x script/**/* && chmod +x script/**
-    - script/download-libs.sh
-    - npm ci --ignore-scripts
-    - npx prebuildify --napi
-    - tar -czf prebuilds.tar.gz prebuilds
-    - ls
-    - rm -rf ffi build 
-  test_20_script:
-    - . "$NVS_HOME/nvs.sh"
-    - nvs use 20/x64
-    - file $(which node) | grep -e 'x64'
-    - node --version
-    - ls
-    - script/ci/build-and-test.sh
-    - ls
-    - npm run clean
-    - rm -rf node_modules
-    - ls
-  test_18_script:
-    - . "$NVS_HOME/nvs.sh"
-    - nvs use 18/x64
-    - file $(which node) | grep -e 'x64'
-    - node --version
-    - script/ci/build-and-test.sh
-    - ls
-    - npm run clean
-    - rm -rf node_modules
-    - ls
-  test_16_script:
-    - . "$NVS_HOME/nvs.sh"
-    - nvs use 16/x64
-    - file $(which node) | grep -e 'x64'
-    - node --version
-    - script/ci/build-and-test.sh
-    - ls
-    - npm run clean
-    - rm -rf node_modules
-    - ls
-  artifacts:
-    path: "prebuilds.tar.gz"
+    path: prebuilds/*.tar.gz
