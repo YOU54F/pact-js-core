@@ -80,6 +80,10 @@ test
 # release scripts
 script
 
+## these arent needed in the final bundle
+binding.gyp
+native
+
 .cirrus
 .gitattributes
 DEVELOPER.md

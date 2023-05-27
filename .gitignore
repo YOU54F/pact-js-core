@@ -69,6 +69,7 @@ standalone/README.md
 *.dll*
 pact.h
 pact-cpp.h
+ffi/README.md
 *.dylib
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build

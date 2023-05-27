@@ -84,7 +84,6 @@ FETCH_ASSETS=true ./script/ci/check-release-libs.sh --fetch-assets -t "${NEXT_TA
 if [[ ${DRY_RUN:-} == 'true' ]]; then
   VERSION=$NEXT_VERSION
   TAG=$NEXT_TAG
-  echo "version=$VERSION" >> $GITHUB_OUTPUT
 else
   # Don't release if there are no changes
   if [ "$(echo "$RELEASE_NOTES" | wc -l)" -eq 1 ]; then
