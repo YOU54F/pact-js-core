@@ -80,10 +80,6 @@ test
 # release scripts
 script
 
-# FFI binaries
-ffi
-!prebuilds
-
 .cirrus
 .gitattributes
 DEVELOPER.md
