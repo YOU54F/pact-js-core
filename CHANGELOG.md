@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## 13.18.2 (2023-05-27)
+
+
+### Fixes and Improvements
+
+* node-gyp-build for resolution only ([fceb1cf](https://github.com/pact-foundation/pact-js-core/commit/fceb1cf2cd091b0858f73b6184398df392aa061a))
+
 ## 13.18.1 (2023-05-27)
 
 
