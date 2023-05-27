@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## 13.19.0 (2023-05-27)
+
+
+### Features
+
+* Improved error messaging on path lookups ([b3c80be](https://github.com/pact-foundation/pact-js-core/commit/b3c80be68882cdbbc0801f01e3d0ea1493dccb5e))
+
 ## 13.18.2 (2023-05-27)
 
 
