@@ -1,5 +1,5 @@
 import path from 'node:path';
-import bindings = require('bindings');
+import bindings = require('node-gyp-build');
 import logger, { DEFAULT_LOG_LEVEL } from '../logger';
 import { LogLevel } from '../logger/types';
 import { Ffi } from './types';
@@ -21,11 +21,13 @@ const supportedPlatforms = [
   'win32-x64',
 ];
 const platform = `${process.platform}-${process.arch}`;
-const supportedPlatformsMessage = `Supported platforms are: \n\n - ${supportedPlatforms.join(
-  '\n - '
-)}\n`;
-const detectedMessage = `We detected your platform as: \n\n - ${platform}\n`;
 
+const supportedPlatformsMessage = [
+  'Supported platforms are: ',
+  ` - ${supportedPlatforms.join('\n - ')}`,
+].join('\n');
+const detectedMessage = `We detected your platform as: \n\n - ${platform}\n`;
+logger.info(detectedMessage);
 if (!supportedPlatforms.includes(platform)) {
   logger.warn(supportedPlatformsMessage);
   logger.warn(detectedMessage);
@@ -33,21 +35,36 @@ if (!supportedPlatforms.includes(platform)) {
   process.exit(1);
 }
 
-const libPath = path.join('..', 'prebuilds', platform, 'node.napi.node');
-const loadPath = process.env['PACT_NAPI_NODE_LOCATION']?.toString() ?? libPath;
+const loadPathMessage = (bindingsPath: string) =>
+  `: loading native module from: \n\n - ${bindingsPath} ${
+    process.env['PACT_NAPI_NODE_LOCATION']
+      ? '\n - source: PACT_NAPI_NODE_LOCATION\n'
+      : '\n   source: prebuilds \n\n - You can override via PACT_NAPI_NODE_LOCATION\n'
+  }`;
 
-const loadPathMessage = `: loading native module from: \n\n - ${path.resolve(
-  loadPath
-)} ${
-  process.env['PACT_NAPI_NODE_LOCATION']
-    ? '\n - source: PACT_NAPI_NODE_LOCATION\n'
-    : '\n   source: prebuilds \n\n - You can override via PACT_NAPI_NODE_LOCATION\n'
-}`;
+const bindingsResolver = (bindingsPath: string | undefined) =>
+  bindings(bindingsPath);
 
+const bindingPaths = [
+  path.resolve(
+    process.env['PACT_NAPI_NODE_LOCATION']?.toString() ?? path.resolve()
+  ),
+];
 let ffiLib: Ffi;
 try {
-  logger.debug(`Attempting to find pact native module ${loadPathMessage}`);
-  ffiLib = bindings(loadPath);
+  bindingPaths.forEach((bindingPath) => {
+    try {
+      logger.info(
+        `Attempting to find pact native module ${loadPathMessage(bindingPath)}`
+      );
+      ffiLib = bindingsResolver(bindingPath);
+      if (ffiLib) {
+        throw new Error('Native module found');
+      }
+    } catch (error) {
+      logger.warn(`Failed to load native module from ${bindingPath}: ${error}`);
+    }
+  });
 } catch (error) {
   logger.debug(supportedPlatformsMessage);
   logger.debug(detectedMessage);
