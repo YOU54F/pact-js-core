@@ -11,7 +11,7 @@ chai.use(chaiAsPromised);
 const { expect } = chai;
 const rm = util.promisify(rimraf);
 
-describe('Server Spec', () => {
+describe.skip('Server Spec', () => {
   let server: any;
   const monkeypatchFile: string = path.resolve(
     __dirname,

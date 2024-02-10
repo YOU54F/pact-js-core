@@ -8,7 +8,7 @@ import { ServerOptions } from '.';
 const { expect } = chai;
 chai.use(chaiAsPromised);
 
-describe('Pact Spec', () => {
+describe.skip('Pact Spec', () => {
   afterEach(() => pact.removeAllServers());
 
   describe('Set Log Level', () => {

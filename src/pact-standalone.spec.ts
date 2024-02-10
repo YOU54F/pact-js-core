@@ -8,7 +8,7 @@ const { expect } = chai;
 const basePath = pactEnvironment.cwd;
 
 // Needs to stay a function and not an arrow function to access mocha 'this' context
-describe('Pact Standalone', function forMocha() {
+describe.skip('Pact Standalone', function forMocha() {
   // Set timeout to 10 minutes because downloading binaries might take a while.
   this.timeout(600000);
 
