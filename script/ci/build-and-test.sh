@@ -20,7 +20,7 @@ fi
 node --version
 npm --version
 
-npm ci --ignore-scripts
+npm ci --ignore-scripts --maxsockets 1 
 
 npm run format:check
 npm run lint
