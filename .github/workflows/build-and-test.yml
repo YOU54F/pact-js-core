@@ -198,6 +198,8 @@ jobs:
         run: echo "ONLY_DOWNLOAD_PACT_FOR_WINDOWS=true" >> $GITHUB_ENV
 
       - run: FETCH_ASSETS=true REPO=you54f/pact-js-core ./script/ci/check-release-libs.sh --fetch-assets -t v15.0.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - run: ./script/ci/download-standalone-and-test.sh
         if: runner.os == 'Linux' && matrix.docker != true
 
