@@ -61,13 +61,13 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - if: runner.os == 'Linux'
         name: prebuild linux amd64 musl
-        run: docker run -v $PWD:/home --platform linux/amd64 --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'apk add bash && cd /home && /home/script/ci/prebuild-alpine.sh && rm -rf ffi node_modules'
+        run: docker run -v $PWD:/home/node --platform linux/amd64 --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'apk add bash && cd /home/node && /home/node/script/ci/prebuild-alpine.sh && rm -rf ffi node_modules'
       - if: runner.os == 'Linux'
         name: prebuild linux arm64 musl
-        run: docker run -v $PWD:/home --platform linux/arm64 --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'apk add bash && cd /home && /home/script/ci/prebuild-alpine.sh && rm -rf ffi node_modules'
+        run: docker run -v $PWD:/home/node --platform linux/arm64 --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'apk add bash && cd /home/node && /home/node/script/ci/prebuild-alpine.sh && rm -rf ffi node_modules'
       - if: runner.os == 'Linux'
         name: prebuild linux arm64
-        run: docker run -v $PWD:/home --platform linux/arm64 --rm node:${{ matrix.node-version }} bin/bash -c 'cd /home && /home/script/ci/prebuild.sh && rm -rf ffi node_modules'
+        run: docker run -v $PWD:/home/node --platform linux/arm64 --rm node:${{ matrix.node-version }} bin/bash -c 'cd /home/node && /home/node/script/ci/prebuild.sh && rm -rf ffi node_modules'
       - run: sudo chown -R $(id -u):$(id -g) prebuilds
         if: runner.os == 'Linux'
       - run: ./script/ci/prebuild.sh
@@ -210,10 +210,10 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - if: runner.os == 'Linux' && matrix.docker == true && matrix.musl != true && matrix.arch == 'arm64'
         name: test arm64
-        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }} bin/bash -c 'apt install -y shared-mime-info && cd /home && /home/script/ci/unpack-and-test.sh'
+        run: docker run -v $PWD:/home/node --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }} bin/bash -c 'apt install -y shared-mime-info && cd /home/node && /home/node/script/ci/unpack-and-test.sh'
       - if: runner.os == 'Linux' && matrix.docker == true && matrix.musl == true
         name: test linux ${{ matrix.arch }} musl
-        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'apk add bash curl shared-mime-info && cd /home && /home/script/ci/unpack-and-test.sh'
+        run: docker run -v $PWD:/home/node --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'apk add bash curl shared-mime-info && cd /home/node && /home/node/script/ci/unpack-and-test.sh'
 
   # release_dry_run:
   #   runs-on: ubuntu-latest
