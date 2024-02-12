@@ -8,82 +8,82 @@ on:
 
 jobs:
 
-  create_pre_release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - run: GH_CREATE_PRE_RELEASE=true ./script/ci/release.sh
-        if: github.ref == 'refs/heads/master' && env.ACT != 'true' && runner.os == 'Linux'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+  # create_pre_release:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  #     - run: GH_CREATE_PRE_RELEASE=true ./script/ci/release.sh
+  #       if: github.ref == 'refs/heads/master' && env.ACT != 'true' && runner.os == 'Linux'
+  #       env:
+  #         GITHUB_TOKEN: ${{ github.token }}
    
-  prebuild:
-    needs: [ create_pre_release ]
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [20]
-        os: [
-          macos-14, 
-          macos-12, 
-          ubuntu-latest,
-          windows-latest
-          ]
+  # prebuild:
+  #   needs: [ create_pre_release ]
+  #   runs-on: ${{ matrix.os }}
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       node-version: [20]
+  #       os: [
+  #         macos-14, 
+  #         macos-12, 
+  #         ubuntu-latest,
+  #         windows-latest
+  #         ]
 
-    env:
-      NODE_VERSION: ${{ matrix.node-version }}
+  #   env:
+  #     NODE_VERSION: ${{ matrix.node-version }}
 
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
       
-      - name: Use Node.js ${{ matrix.node-version  }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version  }}
+  #     - name: Use Node.js ${{ matrix.node-version  }}
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: ${{ matrix.node-version  }}
 
-      - if: runner.os == 'Windows'
-        run: echo "ONLY_DOWNLOAD_PACT_FOR_WINDOWS=true" >> $GITHUB_ENV
+  #     - if: runner.os == 'Windows'
+  #       run: echo "ONLY_DOWNLOAD_PACT_FOR_WINDOWS=true" >> $GITHUB_ENV
 
 
-      - name: Set up QEMU
-        if: runner.os == 'Linux'
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        if: runner.os == 'Linux'
-        uses: docker/setup-buildx-action@v3
-      - if: runner.os == 'Linux'
-        name: prebuild linux amd64 musl
-        run: docker run -v $PWD:/home/node --platform linux/amd64 --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'npm install -g npm@10.4.0 && apk add bash && cd /home/node && /home/node/script/ci/prebuild-alpine.sh && rm -rf ffi node_modules'
-      - if: runner.os == 'Linux'
-        name: prebuild linux arm64 musl
-        run: docker run -v $PWD:/home/node --platform linux/arm64 --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'npm install -g npm@10.4.0 && apk add bash && cd /home/node && /home/node/script/ci/prebuild-alpine.sh && rm -rf ffi node_modules'
-      - if: runner.os == 'Linux'
-        name: prebuild linux arm64
-        run: docker run -v $PWD:/home/node --platform linux/arm64 --rm node:${{ matrix.node-version }} bin/bash -c 'npm install -g npm@10.4.0 && cd /home/node && /home/node/script/ci/prebuild.sh && rm -rf ffi node_modules'
-      - run: sudo chown -R $(id -u):$(id -g) prebuilds
-        if: runner.os == 'Linux'
-      - run: ./script/ci/prebuild.sh
-      - name: Upload prebuild for ${{ runner.os }}-${{ runner.arch }}
-        uses: actions/upload-artifact@v3
-        with:
-          path: prebuilds/*.tar.gz
+  #     - name: Set up QEMU
+  #       if: runner.os == 'Linux'
+  #       uses: docker/setup-qemu-action@v3
+  #     - name: Set up Docker Buildx
+  #       if: runner.os == 'Linux'
+  #       uses: docker/setup-buildx-action@v3
+  #     - if: runner.os == 'Linux'
+  #       name: prebuild linux amd64 musl
+  #       run: docker run -v $PWD:/home/node/app --platform linux/amd64 --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'npm install -g npm@10.4.0 && apk add bash && cd /home/node/app && /home/node/app/script/ci/prebuild-alpine.sh && rm -rf ffi node_modules'
+  #     - if: runner.os == 'Linux'
+  #       name: prebuild linux arm64 musl
+  #       run: docker run -v $PWD:/home/node/app --platform linux/arm64 --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'npm install -g npm@10.4.0 && apk add bash && cd /home/node/app && /home/node/app/script/ci/prebuild-alpine.sh && rm -rf ffi node_modules'
+  #     - if: runner.os == 'Linux'
+  #       name: prebuild linux arm64
+  #       run: docker run -v $PWD:/home/node/app --platform linux/arm64 --rm node:${{ matrix.node-version }} bin/bash -c 'npm install -g npm@10.4.0 && cd /home/node/app && /home/node/app/script/ci/prebuild.sh && rm -rf ffi node_modules'
+  #     - run: sudo chown -R $(id -u):$(id -g) prebuilds
+  #       if: runner.os == 'Linux'
+  #     - run: ./script/ci/prebuild.sh
+  #     - name: Upload prebuild for ${{ runner.os }}-${{ runner.arch }}
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         path: prebuilds/*.tar.gz
           
-      # - run: GH_PRE_RELEASE_UPLOAD=true ./script/ci/release.sh
-      #   if: github.ref == 'refs/heads/master' && env.ACT != 'true'
-      #   env:
-      #       GITHUB_TOKEN: ${{ github.token }}
+  #     # - run: GH_PRE_RELEASE_UPLOAD=true ./script/ci/release.sh
+  #     #   if: github.ref == 'refs/heads/master' && env.ACT != 'true'
+  #     #   env:
+  #     #       GITHUB_TOKEN: ${{ github.token }}
 
   test:
     runs-on: ${{ matrix.os }}
-    needs: [prebuild]
+    # needs: [prebuild]
     defaults:
       run:
         shell: bash
@@ -197,7 +197,8 @@ jobs:
       - if: runner.os == 'Windows'
         run: echo "ONLY_DOWNLOAD_PACT_FOR_WINDOWS=true" >> $GITHUB_ENV
 
-      - run: ./script/ci/unpack-and-test.sh
+      - run: FETCH_ASSETS=true REPO=you54f/pact-js-core ./script/ci/check-release-libs.sh --fetch-assets -t v15.0.0
+      - run: ./script/ci/download-standalone-and-test.sh
         if: runner.os == 'Linux' && matrix.docker != true
 
       # Linux aarch64 tests are skipped as QEMU fails when executing the ruby binaries
@@ -210,10 +211,10 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - if: runner.os == 'Linux' && matrix.docker == true && matrix.musl != true && matrix.arch == 'arm64'
         name: test arm64
-        run: docker run -v $PWD:/home/node --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }} bin/bash -c 'apt install -y shared-mime-info && cd /home/node && /home/node/script/ci/unpack-and-test.sh'
+        run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }} bin/bash -c 'apt install -y shared-mime-info && cd /home/node/app && ./script/ci/download-standalone-and-test.sh'
       - if: runner.os == 'Linux' && matrix.docker == true && matrix.musl == true
         name: test linux ${{ matrix.arch }} musl
-        run: docker run -v $PWD:/home/node --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'apk add bash curl shared-mime-info && cd /home/node && /home/node/script/ci/unpack-and-test.sh'
+        run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'apk add bash curl shared-mime-info && cd /home/node/app && ./script/ci/download-standalone-and-test.sh'
 
   # release_dry_run:
   #   runs-on: ubuntu-latest
