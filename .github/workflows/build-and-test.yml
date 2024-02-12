@@ -100,21 +100,21 @@ jobs:
           # - os: windows-latest
           #   arch: amd64
           #   node-version: 16
-          # - os: ubuntu-latest
-          #   arch: amd64
-          #   musl: false
-          #   docker: false
-          #   node-version: 16
-          # - os: ubuntu-latest
-          #   arch: arm64
-          #   musl: false
-          #   docker: true
-          #   node-version: 16
-          # - os: ubuntu-latest
-          #   arch: arm64
-          #   musl: true
-          #   docker: true
-          #   node-version: 16
+          - os: ubuntu-latest
+            arch: amd64
+            musl: false
+            docker: false
+            node-version: 16
+          - os: ubuntu-latest
+            arch: arm64
+            musl: false
+            docker: true
+            node-version: 16
+          - os: ubuntu-latest
+            arch: arm64
+            musl: true
+            docker: true
+            node-version: 16
           - os: ubuntu-latest
             arch: amd64
             musl: true
@@ -129,21 +129,21 @@ jobs:
           # - os: windows-latest
           #   arch: amd64
           #   node-version: 18
-          # - os: ubuntu-latest
-          #   arch: amd64
-          #   musl: false
-          #   docker: false
-          #   node-version: 18
-          # - os: ubuntu-latest
-          #   arch: arm64
-          #   musl: false
-          #   docker: true
-          #   node-version: 18
-          # - os: ubuntu-latest
-          #   arch: arm64
-          #   musl: true
-          #   docker: true
-          #   node-version: 18
+          - os: ubuntu-latest
+            arch: amd64
+            musl: false
+            docker: false
+            node-version: 18
+          - os: ubuntu-latest
+            arch: arm64
+            musl: false
+            docker: true
+            node-version: 18
+          - os: ubuntu-latest
+            arch: arm64
+            musl: true
+            docker: true
+            node-version: 18
           - os: ubuntu-latest
             arch: amd64
             musl: true
@@ -158,26 +158,26 @@ jobs:
           # - os: windows-latest
           #   arch: amd64
           #   node-version: 20
-          # - os: ubuntu-latest
-          #   arch: amd64
-          #   musl: false
-          #   docker: false
-          #   node-version: 20
-          # - os: ubuntu-latest
-          #   arch: arm64
-          #   musl: false
-          #   docker: true
-          #   node-version: 20
-          # - os: ubuntu-latest
-          #   arch: arm64
-          #   musl: true
-          #   docker: true
-          #   node-version: 20
-          # - os: ubuntu-latest
-          #   arch: amd64
-          #   musl: true
-          #   docker: true
-          #   node-version: 20
+          - os: ubuntu-latest
+            arch: amd64
+            musl: false
+            docker: false
+            node-version: 20
+          - os: ubuntu-latest
+            arch: arm64
+            musl: false
+            docker: true
+            node-version: 20
+          - os: ubuntu-latest
+            arch: arm64
+            musl: true
+            docker: true
+            node-version: 20
+          - os: ubuntu-latest
+            arch: amd64
+            musl: true
+            docker: true
+            node-version: 20
     env:
       NODE_VERSION: ${{ matrix.node-version }}
 
@@ -216,7 +216,7 @@ jobs:
         name: test arm64
         run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }} /bin/bash -c 'chown -R 1001:127 /root/.npm && apt install -y shared-mime-info && cd /home/node/app && ./script/ci/download-standalone-and-test.sh'
       - if: runner.os == 'Linux' && matrix.docker == true && matrix.musl == true
-        name: test linux ${{ matrix.arch }} musl
+        name: test linux ${{ matrix.arch }} musl # Setting the cache location is a workaround for node 16 install errors
         run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }}-alpine /bin/sh -c 'npm config set cache /tmp && apk add bash curl shared-mime-info && cd /home/node/app && ./script/ci/download-standalone-and-test.sh'
 
   # release_dry_run:
