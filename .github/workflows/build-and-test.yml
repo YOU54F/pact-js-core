@@ -61,13 +61,13 @@ jobs:
   #       uses: docker/setup-buildx-action@v3
   #     - if: runner.os == 'Linux'
   #       name: prebuild linux amd64 musl
-  #       run: docker run -v $PWD:/home/node/app --platform linux/amd64 --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'npm install -g npm@10.4.0 && apk add bash && cd /home/node/app && /home/node/app/script/ci/prebuild-alpine.sh && rm -rf ffi node_modules'
+  #       run: docker run -v $PWD:/home/node/app --platform linux/amd64 --rm node:${{ matrix.node-version }}-alpine /bin/sh -c apk add bash && cd /home/node/app && ./script/ci/prebuild-alpine.sh && rm -rf ffi node_modules'
   #     - if: runner.os == 'Linux'
   #       name: prebuild linux arm64 musl
-  #       run: docker run -v $PWD:/home/node/app --platform linux/arm64 --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'npm install -g npm@10.4.0 && apk add bash && cd /home/node/app && /home/node/app/script/ci/prebuild-alpine.sh && rm -rf ffi node_modules'
+  #       run: docker run -v $PWD:/home/node/app --platform linux/arm64 --rm node:${{ matrix.node-version }}-alpine /bin/sh -c 'apk add bash && cd /home/node/app && ./script/ci/prebuild-alpine.sh && rm -rf ffi node_modules'
   #     - if: runner.os == 'Linux'
   #       name: prebuild linux arm64
-  #       run: docker run -v $PWD:/home/node/app --platform linux/arm64 --rm node:${{ matrix.node-version }} bin/bash -c 'npm install -g npm@10.4.0 && cd /home/node/app && /home/node/app/script/ci/prebuild.sh && rm -rf ffi node_modules'
+  #       run: docker run -v $PWD:/home/node/app --platform linux/arm64 --rm node:${{ matrix.node-version }} /bin/bash -c 'cd /home/node/app && ./script/ci/prebuild.sh && rm -rf ffi node_modules'
   #     - run: sudo chown -R $(id -u):$(id -g) prebuilds
   #       if: runner.os == 'Linux'
   #     - run: ./script/ci/prebuild.sh
@@ -214,9 +214,9 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - if: runner.os == 'Linux' && matrix.docker == true && matrix.musl != true && matrix.arch == 'arm64'
         name: test arm64
-        run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }} /bin/bash -c 'chown -R 1001:127 /root/.npm && apt install -y shared-mime-info && cd /home/node/app && ./script/ci/download-standalone-and-test.sh'
+        run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }} /bin/bash -c 'npm config set cache /tmp && apt install -y shared-mime-info && cd /home/node/app && ./script/ci/download-standalone-and-test.sh'
       - if: runner.os == 'Linux' && matrix.docker == true && matrix.musl == true
-        name: test linux ${{ matrix.arch }} musl # Setting the cache location is a workaround for node 16 install errors
+        name: test linux ${{ matrix.arch }} musl # Setting the cache location is a workaround for node 16 install errors https://github.com/npm/cli/issues/5114
         run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }}-alpine /bin/sh -c 'npm config set cache /tmp && apk add bash curl shared-mime-info && cd /home/node/app && ./script/ci/download-standalone-and-test.sh'
 
   # release_dry_run:
