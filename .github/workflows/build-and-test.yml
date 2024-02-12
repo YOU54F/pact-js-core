@@ -217,7 +217,7 @@ jobs:
         run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }} /bin/bash -c 'chown -R 1001:127 /root/.npm && apt install -y shared-mime-info && cd /home/node/app && ./script/ci/download-standalone-and-test.sh'
       - if: runner.os == 'Linux' && matrix.docker == true && matrix.musl == true
         name: test linux ${{ matrix.arch }} musl
-        run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }}-alpine /bin/sh -c 'chown -R 1001:127 /root/.npm && rm -rf /root/.npm/_cacache/tmp && apk add bash curl shared-mime-info && cd /home/node/app && ./script/ci/download-standalone-and-test.sh'
+        run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }}-alpine /bin/sh -c 'chown -R 1001:127 /root/.npm && rm -rf /root/.npm/_* && apk add bash curl shared-mime-info && cd /home/node/app && ./script/ci/download-standalone-and-test.sh'
 
   # release_dry_run:
   #   runs-on: ubuntu-latest
