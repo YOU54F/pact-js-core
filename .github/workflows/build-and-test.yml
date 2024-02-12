@@ -28,25 +28,98 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [20]
+        # musl: [false]
+        # docker: [false]
         include:
-          - os: ubuntu-latest
-            musl: false
+          - os: macos-14
             arch: amd64
-            docker: true
-          - os: ubuntu-latest
-            musl: true
-            arch: amd64
-          - os: ubuntu-latest
-            musl: true
+            node-version: 16
+          - os: macos-12
             arch: arm64
+            node-version: 16
+          - os: windows-latest
+            arch: amd64
+            node-version: 16
+          - os: ubuntu-latest
+            arch: amd64
+            musl: false
+            docker: false
+            node-version: 16
+          - os: ubuntu-latest
+            arch: arm64
+            musl: false
             docker: true
-            # os: [
-            #   # macos-14,
-            #   # macos-12,
-            #   ubuntu-latest,
-            #   # windows-latest
-            #   ]
+            node-version: 16
+          - os: ubuntu-latest
+            arch: arm64
+            musl: true
+            docker: true
+            node-version: 16
+          - os: ubuntu-latest
+            arch: amd64
+            musl: true
+            docker: true
+            node-version: 16
+
+          - os: macos-14
+            arch: amd64
+            node-version: 18
+          - os: macos-12
+            arch: arm64
+            node-version: 18
+          - os: windows-latest
+            arch: amd64
+            node-version: 18
+          - os: ubuntu-latest
+            arch: amd64
+            musl: false
+            docker: false
+            node-version: 18
+          - os: ubuntu-latest
+            arch: arm64
+            musl: false
+            docker: true
+            node-version: 18
+          - os: ubuntu-latest
+            arch: arm64
+            musl: true
+            docker: true
+            node-version: 18
+          - os: ubuntu-latest
+            arch: amd64
+            musl: true
+            docker: true
+            node-version: 18
+
+          - os: macos-14
+            arch: amd64
+            node-version: 20
+          - os: macos-12
+            arch: arm64
+            node-version: 20
+          - os: windows-latest
+            arch: amd64
+            node-version: 20
+          - os: ubuntu-latest
+            arch: amd64
+            musl: false
+            docker: false
+            node-version: 20
+          - os: ubuntu-latest
+            arch: arm64
+            musl: false
+            docker: true
+            node-version: 20
+          - os: ubuntu-latest
+            arch: arm64
+            musl: true
+            docker: true
+            node-version: 20
+          - os: ubuntu-latest
+            arch: amd64
+            musl: true
+            docker: true
+            node-version: 20
     env:
       NODE_VERSION: ${{ matrix.node-version }}
 
