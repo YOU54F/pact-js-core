@@ -208,10 +208,10 @@ jobs:
       - name: Set up Docker Buildx
         if: runner.os == 'Linux'
         uses: docker/setup-buildx-action@v3
-      - if: runner.os == 'Linux' && matrix.docker == 'true' && matrix.musl != 'true'
+      - if: runner.os == 'Linux' && matrix.docker == true && matrix.musl != true && matrix.arch == 'arm64'
         name: test arm64
         run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }} bin/bash -c 'apt install -y shared-mime-info && cd /home && /home/script/ci/unpack-and-test.sh'
-      - if: runner.os == 'Linux' && matrix.docker == 'true' && matrix.musl == 'true'
+      - if: runner.os == 'Linux' && matrix.docker == true && matrix.musl == true
         name: test linux ${{ matrix.arch }} musl
         run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'apk add bash curl shared-mime-info && cd /home && /home/script/ci/unpack-and-test.sh'
 
