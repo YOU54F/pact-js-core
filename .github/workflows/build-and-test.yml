@@ -193,6 +193,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
+        if: matrix.docker != true
 
       - if: runner.os == 'Windows'
         run: echo "ONLY_DOWNLOAD_PACT_FOR_WINDOWS=true" >> $GITHUB_ENV
@@ -201,7 +202,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - run: ./script/ci/download-standalone-and-test.sh
-        if: runner.os == 'Linux' && matrix.docker != true
+        if: matrix.docker != true
 
       # Linux aarch64 tests are skipped as QEMU fails when executing the ruby binaries
       # Related comment: https://github.com/phusion/passenger/issues/2288#issuecomment-1387625121 
