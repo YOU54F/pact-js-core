@@ -90,12 +90,12 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [16,18,20]
-        os: [
-          # macos-14, 
-          # macos-12, 
-          ubuntu-latest,
-          # windows-latest
-          ]
+        # os: [
+        #   # macos-14, 
+        #   # macos-12, 
+        #   ubuntu-latest,
+        #   # windows-latest
+        #   ]
         include:
           - os: ubuntu-latest
             musl: false
