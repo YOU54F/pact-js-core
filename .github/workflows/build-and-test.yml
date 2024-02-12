@@ -98,16 +98,13 @@ jobs:
           ]
         include:
           - os: ubuntu-latest
-            node-version: 20
             musl: false
             arch: amd64
             docker: true
           - os: ubuntu-latest
-            node-version: 20
             musl: true
             arch: amd64
           - os: ubuntu-latest
-            node-version: 20
             musl: true
             arch: arm64
             docker: true
