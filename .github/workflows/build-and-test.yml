@@ -29,12 +29,24 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [20]
-        os: [
-          # macos-14,
-          # macos-12,
-          ubuntu-latest,
-          # windows-latest
-          ]
+        include:
+          - os: ubuntu-latest
+            musl: false
+            arch: amd64
+            docker: true
+          - os: ubuntu-latest
+            musl: true
+            arch: amd64
+          - os: ubuntu-latest
+            musl: true
+            arch: arm64
+            docker: true
+            # os: [
+            #   # macos-14,
+            #   # macos-12,
+            #   ubuntu-latest,
+            #   # windows-latest
+            #   ]
     env:
       NODE_VERSION: ${{ matrix.node-version }}
 
