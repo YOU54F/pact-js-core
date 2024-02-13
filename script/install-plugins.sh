@@ -12,3 +12,4 @@ set -e # Needed for Windows bash, which doesn't read the shebang
 # ~/.pact/bin/pact-plugin-cli -y install https://github.com/you54f/pact-plugins/releases/tag/csv-plugin-0.0.6
 ~/.pact/bin/pact-plugin-cli -y install https://github.com/you54f/pact-matt-plugin/releases/tag/v0.1.0
 # ~/.pact/bin/pact-plugin-cli -y install https://github.com/austek/pact-avro-plugin/releases/tag/v0.0.5
+~/.pact/bin/pact-plugin-cli list installed
