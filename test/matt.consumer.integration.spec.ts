@@ -148,7 +148,7 @@ describe('MATT protocol test', () => {
       });
 
       it('generates a pact with success', async () => {
-        const message = await sendMattMessageTCP('hello', HOST, port);
+        const message = await sendMattMessageTCP('hellotcp', HOST, port);
         expect(message).to.eq('tcpworld');
 
         const res = tcpProvider.mockServerMatchedSuccessfully(port);
