@@ -5,5 +5,7 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)" # Figure out where the script is running
 . "$SCRIPT_DIR"/../lib/robust-bash.sh
 
+./script/install-cli.sh
+./script/install-plugins.sh
 ./script/download-standalone.sh
 ./script/ci/build-and-test.sh

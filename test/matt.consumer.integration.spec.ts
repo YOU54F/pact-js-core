@@ -42,8 +42,8 @@ const sendMattMessageTCP = (
   });
 };
 
-describe.skip('MATT protocol test', () => {
-  setLogLevel('trace');
+describe('MATT protocol test', () => {
+  setLogLevel('info');
 
   let provider: ConsumerPact;
   let tcpProvider: ConsumerMessagePact;
@@ -60,7 +60,7 @@ describe.skip('MATT protocol test', () => {
         'matt-provider',
         FfiSpecificationVersion['SPECIFICATION_VERSION_V4']
       );
-      provider.addPlugin('matt', '0.0.2');
+      provider.addPlugin('matt', '0.1.0');
 
       const interaction = provider.newInteraction('');
       interaction.uponReceiving('A request to communicate via MATT');
@@ -111,7 +111,7 @@ describe.skip('MATT protocol test', () => {
         }));
   });
 
-  describe('TCP Messages', () => {
+  describe.skip('TCP Messages', () => {
     beforeEach(() => {
       tcpProvider = makeConsumerMessagePact(
         'matt-tcp-consumer',
@@ -131,7 +131,7 @@ describe.skip('MATT protocol test', () => {
 
       beforeEach(() => {
         const mattMessage = `{"request": {"body": "hellotcp"}, "response":{"body":"tcpworld"}}`;
-        tcpProvider.addPlugin('matt', '0.0.2');
+        tcpProvider.addPlugin('matt', '0.1.0');
 
         const message = tcpProvider.newSynchronousMessage('a MATT message');
         message.withPluginRequestResponseInteractionContents(

@@ -25,7 +25,7 @@ const isDarwinArm64 = process.platform === 'darwin' && process.arch === 'arm64';
 const usesOctetStream = isWin || isDarwinArm64;
 
 describe('FFI integration test for the HTTP Consumer API', () => {
-  setLogLevel('trace');
+  setLogLevel('info');
 
   let port: number;
   let pact: ConsumerPact;
@@ -255,7 +255,7 @@ describe('FFI integration test for the HTTP Consumer API', () => {
   });
 
   // Should only run this if the plugin is installed
-  describe.skip('using a plugin (protobufs)', () => {
+  describe('using a plugin (protobufs)', () => {
     const protoFile = `${__dirname}/integration/plugin.proto`;
 
     beforeEach(() => {
@@ -264,7 +264,7 @@ describe('FFI integration test for the HTTP Consumer API', () => {
         'bar-provider',
         FfiSpecificationVersion['SPECIFICATION_VERSION_V3']
       );
-      pact.addPlugin('protobuf', '0.1.14');
+      pact.addPlugin('protobuf', '0.3.14');
 
       const interaction = pact.newInteraction('some description');
       const protobufContents = {
