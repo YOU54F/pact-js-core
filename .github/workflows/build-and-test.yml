@@ -180,6 +180,7 @@ jobs:
             node-version: 20
     env:
       NODE_VERSION: ${{ matrix.node-version }}
+      PACT_PLUGIN_DIR: /tmp
 
     steps:
       - uses: actions/checkout@v4
