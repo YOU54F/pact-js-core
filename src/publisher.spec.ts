@@ -13,7 +13,7 @@ import { PublisherOptions } from './types';
 const { expect } = chai;
 chai.use(chaiAsPromised);
 
-describe.skip('Publish Spec', () => {
+(process.env['SKIP_STANDALONE'] === "true" ? describe.skip : describe )('Publish Spec', () => {
   const PORT = Math.floor(Math.random() * 999) + 9000;
   const pactFile = path.resolve(
     __dirname,

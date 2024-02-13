@@ -198,11 +198,15 @@ jobs:
       - if: runner.os == 'Windows'
         run: echo "ONLY_DOWNLOAD_PACT_FOR_WINDOWS=true" >> $GITHUB_ENV
 
+      - if: runner.os == 'Linux' && matrix.docker == 'true' && matrix.arch == 'arm64'
+        run: echo "SKIP_STANDALONE=true" >> $GITHUB_ENV
+
       - run: FETCH_ASSETS=true REPO=you54f/pact-js-core ./script/ci/check-release-libs.sh --fetch-assets -t v15.0.0
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - run: ./script/ci/download-standalone-and-test.sh
         if: matrix.docker != true
+
 
       # Linux aarch64 tests are skipped as QEMU fails when executing the ruby binaries
       # Related comment: https://github.com/phusion/passenger/issues/2288#issuecomment-1387625121 
@@ -217,7 +221,7 @@ jobs:
         run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }} /bin/bash -c 'npm config set cache /tmp && apt install -y shared-mime-info && cd /home/node/app && ./script/ci/download-standalone-and-test.sh'
       - if: runner.os == 'Linux' && matrix.docker == true && matrix.musl == true
         name: test linux ${{ matrix.arch }} musl # Setting the cache location is a workaround for node 16 install errors https://github.com/npm/cli/issues/5114
-        run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }}-alpine /bin/sh -c 'npm config set cache /tmp && apk add bash curl shared-mime-info && cd /home/node/app && ./script/ci/download-standalone-and-test.sh'
+        run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }}-alpine /bin/sh -c 'npm config set cache /tmp && apk add bash curl shared-mime-info gcompat libc6-compat gzip file protoc protobuf-dev && cd /home/node/app && ./script/ci/download-standalone-and-test.sh'
 
   # release_dry_run:
   #   runs-on: ubuntu-latest

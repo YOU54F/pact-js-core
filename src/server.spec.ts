@@ -11,7 +11,7 @@ chai.use(chaiAsPromised);
 const { expect } = chai;
 const rm = util.promisify(rimraf);
 
-describe.skip('Server Spec', () => {
+(process.env['SKIP_STANDALONE'] === "true" ? describe.skip : describe )('Server Spec', () => {
   let server: any;
   const monkeypatchFile: string = path.resolve(
     __dirname,

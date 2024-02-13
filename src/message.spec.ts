@@ -9,7 +9,7 @@ import messageFactory from './message';
 const { expect } = chai;
 chai.use(chaiAsPromised);
 
-describe.skip('Message Spec', () => {
+(process.env['SKIP_STANDALONE'] === "true" ? describe.skip : describe )('Message Spec', () => {
   const validJSON = `{ "description": "a test mesage", "content": { "name": "Mary" } }`;
 
   let absolutePath: string;

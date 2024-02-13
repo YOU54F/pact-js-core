@@ -7,7 +7,7 @@ import stubFactory from './stub';
 chai.use(chaiAsPromised);
 const { expect } = chai;
 
-describe.skip('Stub Spec', () => {
+(process.env['SKIP_STANDALONE'] === "true" ? describe.skip : describe )('Stub Spec', () => {
   let stub: any;
   const validDefaults = {
     pactUrls: [
