@@ -7,7 +7,7 @@ set -e
 FFI_VERSION=$1
 TYPE=${2:-fix}
 # DASHERISED_VERSION=$(echo "${FFI_VERSION}" | sed 's/\./\-/g')
-BRANCH_NAME="chore/upgrade-to-pact-ffi-${FFI_VERSION}"
+BRANCH_NAME="chore/upgrade-to-pact-ffi-v${FFI_VERSION}"
 
 git checkout master
 git checkout src/ffi/index.ts
