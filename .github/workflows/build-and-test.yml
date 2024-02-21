@@ -5,7 +5,10 @@ on:
   pull_request:
     branches: [master]
   workflow_dispatch:
-
+    inputs: 
+      PACT_FFI_VERSION:
+        description: Tag from pactfoundation/pact-reference
+        required: false
 jobs:
 
   create_pre_release:
@@ -38,7 +41,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+      - name: update PACT_FFI_VERSION if workflow input is set
+        run: script/update-pact-ffi.sh ${{ inputs.PACT_FFI_VERSION }}
+        if: inputs.PACT_FFI_VERSION != ''
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
@@ -89,6 +94,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: update PACT_FFI_VERSION if workflow input is set
+        run: script/update-pact-ffi.sh ${{ inputs.PACT_FFI_VERSION }}
+        if: inputs.PACT_FFI_VERSION != ''
+        
       - name: Download prebuilds
         uses: actions/download-artifact@v3
 
