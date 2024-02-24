@@ -1,6 +1,6 @@
 {
-  "name": "@pact-foundation/pact-core",
-  "version": "14.2.0",
+  "name": "@you54f/pact-core",
+  "version": "15.0.0",
   "description": "Core of @pact-foundation/pact. You almost certainly don't want to depend on this directly.",
   "main": "src/index.js",
   "homepage": "https://github.com/pact-foundation/pact-js-core#readme",
@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/pact-foundation/pact-js-core.git"
+    "url": "git://github.com/you54f/pact-js-core.git"
   },
   "keywords": [
     "pact",
@@ -47,6 +47,7 @@
     "node-gyp-build": "^4.6.0",
     "pino": "^8.7.0",
     "pino-pretty": "^9.1.1",
+    "prebuild-install": "^7.1.1",
     "underscore": "1.12.1"
   },
   "devDependencies": {
@@ -114,6 +115,7 @@
     "download-libs": "npm run clean && bash script/download-libs.sh",
     "clean-libs": "rimraf 'ffi'",
     "build": "tsc --project tsconfig.build.json",
+    "install": "prebuild-install -r napi --verbose" ,
     "prerelease": "npm run snyk-protect",
     "release": "commit-and-tag-version",
     "test": "cross-env LOG_LEVEL=debug PACT_DO_NOT_TRACK=true mocha \"{src,test}/**/*.spec.ts\"",
@@ -159,5 +161,8 @@
       }
     ]
   },
-  "snyk": true
+  "snyk": true,
+  "binary": {
+    "napi_versions": [8]
+  }
 }

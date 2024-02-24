@@ -17,6 +17,7 @@ for arch in arm64; do
             -it \
             node:$version-alpine \
             bin/sh -c \
-            'apk add protoc protobuf-dev && cd /home && npm ci --ignore-scripts && npm run build && npm test'
+            'apk add protoc protobuf-dev && cd /home && npm ci && npm run build && npm test'
+            # 'apk add protoc protobuf-dev && cd /home && npm ci --ignore-scripts && npm run build && npm test'
     done
 done
