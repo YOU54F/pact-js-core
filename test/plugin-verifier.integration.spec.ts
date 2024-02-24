@@ -120,7 +120,7 @@ describe('Plugin Verifier Integration Spec', () => {
           ],
           logLevel: 'debug',
           pactUrls: [
-            path.join(__dirname, 'integration', 'grpc', 'route_guide.proto'),
+            path.join(__dirname, 'integration', 'grpc', 'grpc.json'),
           ],
         }).verify();
 
