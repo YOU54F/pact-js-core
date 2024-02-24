@@ -147,10 +147,12 @@ describe('FFI integration test for the Message Consumer API', () => {
     });
 
     describe('with plugin contents (gRPC)', () => {
-      const protoFile = path
-        .join(__dirname, 'integration', 'grpc', 'route_guide.proto')
-        .replace('\\\\', '/')
-        .replace('\\', '/');
+      const protoFile = path.join(
+        __dirname,
+        'integration',
+        'grpc',
+        'route_guide.proto'
+      );
 
       let port: number;
 
@@ -160,7 +162,7 @@ describe('FFI integration test for the Message Consumer API', () => {
 
       beforeEach(() => {
         const grpcInteraction = `{
-          "pact:proto": "${protoFile}",
+          "pact:proto": "${protoFile.replace('\\\\', '/').replace('\\', '/')}",
           "pact:proto-service": "RouteGuide/GetFeature",
           "pact:content-type": "application/protobuf",
           "request": {
