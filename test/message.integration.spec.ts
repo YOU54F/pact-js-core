@@ -147,9 +147,12 @@ describe('FFI integration test for the Message Consumer API', () => {
     });
 
     describe('with plugin contents (gRPC)', () => {
-      const protoFile = path
-        .join(__dirname, 'integration', 'grpc', 'route_guide.proto')
-        .replace('\\', '\\\\');
+      const protoFile = [
+        __dirname,
+        'integration',
+        'grpc',
+        'route_guide.proto',
+      ].join('/');
 
       let port: number;
 
