@@ -107,6 +107,9 @@ jobs:
       # - name: Download prebuilds
       #   uses: actions/download-artifact@v3
       - run: FETCH_ASSETS=true REPO=you54f/pact-js-core ./script/ci/check-release-libs.sh --fetch-assets -t v15.0.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
   
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
