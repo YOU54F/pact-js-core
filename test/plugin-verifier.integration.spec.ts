@@ -4,6 +4,7 @@ import { loadSync } from '@grpc/proto-loader';
 import * as grpc from '@grpc/grpc-js';
 import express = require('express');
 import * as http from 'http';
+import path = require('path');
 import cors = require('cors');
 import bodyParser = require('body-parser');
 import { returnJson } from './integration/data-utils';
@@ -118,14 +119,21 @@ describe('Plugin Verifier Integration Spec', () => {
             },
           ],
           logLevel: 'debug',
-          pactUrls: [`${__dirname}/integration/grpc/grpc.json`],
+          pactUrls: [
+            path.join(__dirname, 'integration', 'grpc', 'route_guide.proto'),
+          ],
         }).verify();
 
         expect('').to.eq('');
       });
 
       it('runs the grpc client', async () => {
-        const protoFile = `${__dirname}/integration/grpc/route_guide.proto`;
+        const protoFile = path.join(
+          __dirname,
+          'integration',
+          'grpc',
+          'route_guide.proto'
+        );
         const feature = await getFeature(`127.0.0.1:${GRPC_PORT}`, protoFile);
 
         console.log(feature);

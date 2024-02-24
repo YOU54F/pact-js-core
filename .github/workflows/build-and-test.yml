@@ -112,6 +112,10 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v2
+        if: matrix.os == 'macos-14'
+
       - if: runner.os == 'Windows'
         run: echo "ONLY_DOWNLOAD_PACT_FOR_WINDOWS=true" >> $GITHUB_ENV
 
