@@ -146,7 +146,7 @@ describe('FFI integration test for the Message Consumer API', () => {
       });
     });
 
-    describe.skip('with plugin contents (gRPC)', () => {
+    describe('with plugin contents (gRPC)', () => {
       const protoFile = `${__dirname}/integration/grpc/route_guide.proto`;
 
       let port: number;
@@ -174,7 +174,7 @@ describe('FFI integration test for the Message Consumer API', () => {
         }`;
 
         pact.addMetadata('pact-node', 'meta-key', 'meta-val');
-        pact.addPlugin('protobuf', '0.1.14');
+        pact.addPlugin('protobuf', '0.3.14');
 
         const message = pact.newSynchronousMessage('a grpc test 1');
         message.given('some state 1');

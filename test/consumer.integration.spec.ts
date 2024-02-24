@@ -264,7 +264,7 @@ describe('FFI integration test for the HTTP Consumer API', () => {
   });
 
   // Should only run this if the plugin is installed
-  describe.skip('using a plugin (protobufs)', () => {
+  describe('using a plugin (protobufs)', () => {
     const protoFile = `${__dirname}/integration/plugin.proto`;
 
     beforeEach(() => {
@@ -273,7 +273,7 @@ describe('FFI integration test for the HTTP Consumer API', () => {
         'bar-provider',
         FfiSpecificationVersion['SPECIFICATION_VERSION_V3']
       );
-      pact.addPlugin('protobuf', '0.1.14');
+      pact.addPlugin('protobuf', '0.3.14');
 
       const interaction = pact.newInteraction('some description');
       const protobufContents = {

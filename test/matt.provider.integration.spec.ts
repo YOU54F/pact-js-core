@@ -52,7 +52,7 @@ const startTCPServer = (host: string, port: number) => {
   });
 };
 
-describe.skip('MATT protocol test', () => {
+describe('MATT protocol test', () => {
   setLogLevel('info');
 
   describe('HTTP and TCP Provider', () => {

@@ -33,7 +33,7 @@ PREBUILDIFY_VERSION=5.0.1
 
 ./script/download-libs.sh
 npm ci --ignore-scripts
-npx --yes prebuildify@${PREBUILDIFY_VERSION} --napi
+npx --yes prebuildify@${PREBUILDIFY_VERSION} --napi --strip
 ls prebuilds/**/*
 case $OS in
   darwin)

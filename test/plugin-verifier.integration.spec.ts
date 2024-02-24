@@ -99,7 +99,7 @@ const getFeature = async (address: string, protoFile: string) => {
   });
 };
 
-describe.skip('Plugin Verifier Integration Spec', () => {
+describe('Plugin Verifier Integration Spec', () => {
   context('plugin tests', () => {
     describe('grpc interaction', () => {
       before(async () => {
