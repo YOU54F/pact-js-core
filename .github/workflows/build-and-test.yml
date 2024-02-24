@@ -106,9 +106,7 @@ jobs:
 
       # - name: Download prebuilds
       #   uses: actions/download-artifact@v3
-      - run: FETCH_ASSETS=true REPO=you54f/pact-js-core ./script/ci/check-release-libs.sh --fetch-assets -t v15.0.0
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+
 
   
       - name: Use Node.js ${{ env.NODE_VERSION }}
@@ -123,8 +121,12 @@ jobs:
       - if: runner.os == 'Windows'
         run: echo "ONLY_DOWNLOAD_PACT_FOR_WINDOWS=true" >> $GITHUB_ENV
 
-      - run: ./script/ci/unpack-and-test.sh
-      # - run: ./script/ci/download-standalone-and-test.sh
+      # - run: ./script/ci/unpack-and-test.sh
+
+      - run: FETCH_ASSETS=true REPO=you54f/pact-js-core ./script/ci/check-release-libs.sh --fetch-assets -t v15.0.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - run: ./script/ci/build-and-test.sh
 
 
   # release_dry_run:
