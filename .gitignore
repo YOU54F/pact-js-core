@@ -66,6 +66,7 @@ standalone/*.gz
 standalone/README.md
 # FFI native bindings
 *.so
+*.a
 *.dll*
 *.dylib
 pact.h
