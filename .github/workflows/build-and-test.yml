@@ -35,9 +35,6 @@ jobs:
           ubuntu-latest,
           windows-latest
           ]
-        # docker: ['false']
-        # alpine: ['false']
-        # arch: ['amd64']
         include:
           - os: ubuntu-latest
             docker: true
@@ -169,7 +166,7 @@ jobs:
         name: test linux amd64 musl
         run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash curl gcompat && cd /home && /home/script/ci/unpack-and-test.sh'
 
-      - if: ${{ matrix.docker == 'true' && matrix.alpine == false && matrix.arch == 'arm64' }}
+      - if: ${{ matrix.docker == 'true' && matrix.alpine == 'false' && matrix.arch == 'arm64' }}
         name: test linux arm64 musl
         run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash curl libc6-compat gcompat && cd /home && /home/script/ci/unpack-and-test.sh'
 
