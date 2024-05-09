@@ -7,8 +7,9 @@ import { PactStandalone, standalone } from './pact-standalone';
 const { expect } = chai;
 const basePath = pactEnvironment.cwd;
 
+const skipTests = process.env['SKIP_STANDALONE_TESTS'] === 'true';
 // Needs to stay a function and not an arrow function to access mocha 'this' context
-describe('Pact Standalone', function forMocha() {
+(skipTests ? describe.skip : describe)('Pact Standalone', function forMocha() {
   // Set timeout to 10 minutes because downloading binaries might take a while.
   this.timeout(600000);
 
