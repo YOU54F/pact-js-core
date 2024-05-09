@@ -35,21 +35,21 @@ jobs:
           ubuntu-latest,
           # windows-latest
           ]
-        docker: [false]
-        alpine: [false]
+        docker: ['false']
+        alpine: ['false']
         arch: ['amd64']
         include:
           - os: ubuntu-latest
-            docker: true
-            alpine: false
+            docker: 'true'
+            alpine: 'false'
             arch: arm64
           - os: ubuntu-latest
-            docker: true
-            alpine: true
+            docker: 'true'
+            alpine: 'true'
             arch: arm64
           - os: ubuntu-latest
-            docker: true
-            alpine: true
+            docker: 'true'
+            alpine: 'true'
             arch: amd64
 
     env:
