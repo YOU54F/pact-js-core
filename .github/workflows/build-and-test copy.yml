@@ -1,0 +1,201 @@
+name: Build and test
+
+on:
+  push:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+
+  # create_pre_release:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  #     - run: GH_CREATE_PRE_RELEASE=true ./script/ci/release.sh
+  #       if: github.ref == 'refs/heads/master' && env.ACT != 'true' && runner.os == 'Linux'
+  #       env:
+  #         GITHUB_TOKEN: ${{ github.token }}
+   
+  prebuild:
+    # needs: [ create_pre_release ]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20]
+        os: [
+          macos-14,
+          macos-12,
+          ubuntu-latest,
+          windows-latest
+          ]
+        docker: ['false']
+        alpine: ['false']
+        arch: ['amd64']
+        include:
+          - os: ubuntu-latest
+            docker: 'true'
+            alpine: 'false'
+            arch: arm64
+          - os: ubuntu-latest
+            docker: 'true'
+            alpine: 'true'
+            arch: arm64
+          - os: ubuntu-latest
+            docker: 'true'
+            alpine: 'true'
+            arch: amd64
+
+    env:
+      NODE_VERSION: ${{ matrix.node-version }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - if: runner.os == 'Windows'
+        run: echo "ONLY_DOWNLOAD_PACT_FOR_WINDOWS=true" >> $GITHUB_ENV
+
+
+      - name: Set up QEMU
+        if: ${{ matrix.docker == 'true' && matrix.alpine == 'true' && matrix.arch == 'arm64' }}
+        uses: docker/setup-qemu-action@v3
+      - if: ${{ matrix.docker == 'true' && matrix.alpine == 'true' }}
+        name: prebuild linux ${{ matrix.arch }} musl
+        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash && cd /home && bash -c "/home/script/ci/prebuild-alpine.sh" && rm -rf ffi node_modules'
+
+      - if: ${{ matrix.docker == 'true' && matrix.alpine != 'true' }}
+        name: prebuild linux ${{ matrix.arch }}
+        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e CIRRUS_CI=true --rm node:20 bin/bash -c 'cd /home && /home/script/ci/prebuild.sh && rm -rf ffi node_modules'
+
+      - run: sudo chown -R $(id -u):$(id -g) prebuilds
+        if: ${{ matrix.docker == 'true' }}
+    
+      - run: ./script/ci/prebuild.sh
+        if: ${{ matrix.docker != 'true' }}
+
+      - name: Upload prebuild for ${{ runner.os }}-${{ runner.arch }}
+        uses: actions/upload-artifact@v3
+        with:
+          path: prebuilds/*.tar.gz
+          
+      - run: GH_PRE_RELEASE_UPLOAD=true ./script/ci/release.sh
+        if: github.ref == 'refs/heads/master' && env.ACT != 'true'
+        env:
+            GITHUB_TOKEN: ${{ github.token }}
+
+  test:
+    runs-on: ${{ matrix.os }}
+    needs: [prebuild]
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [16,18,20]
+        os: [
+          macos-14,
+          macos-12,
+          ubuntu-latest,
+          windows-latest
+          ]
+        docker: [false]
+        include:
+          - os: ubuntu-latest
+            docker: true
+            alpine: false
+            arch: arm64
+          - os: ubuntu-latest
+            docker: true
+            alpine: true
+            arch: arm64
+          - os: ubuntu-latest
+            docker: true
+            alpine: true
+            arch: amd64
+  
+
+    env:
+      NODE_VERSION: ${{ matrix.node-version }}
+      LOG_LEVEL: debug
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download prebuilds
+        uses: actions/download-artifact@v3
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - if: runner.os == 'Windows'
+        run: echo "ONLY_DOWNLOAD_PACT_FOR_WINDOWS=true" >> $GITHUB_ENV
+
+      - run: LOG_LEVEL=debug ./script/ci/unpack-and-test.sh
+        if: ${{ matrix.docker != 'true' }}
+
+
+      # Linux aarch64 tests are skipped as QEMU fails when executing the ruby binaries
+      # Related comment: https://github.com/phusion/passenger/issues/2288#issuecomment-1387625121 
+
+      - name: Set up QEMU
+        if: ${{ matrix.docker == 'true' && matrix.alpine == 'true' && matrix.arch == 'arm64' }}
+        uses: docker/setup-qemu-action@v3
+
+
+      - if: ${{ matrix.docker == 'true' && matrix.alpine != 'true' }}
+        name: test arm64
+        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} --rm node:20 bin/bash -c 'cd /home && /home/script/ci/unpack-and-test.sh'
+
+      - if: ${{ matrix.docker == 'true' && matrix.alpine == 'true' && matrix.arch == 'amd64' }}
+        name: test linux amd64 musl
+        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash curl gcompat && cd /home && /home/script/ci/unpack-and-test.sh'
+
+      - if: ${{ matrix.docker == 'true' && matrix.alpine == 'false' && matrix.arch == 'arm64' }}
+        name: test linux arm64 musl
+        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash curl libc6-compat gcompat && cd /home && /home/script/ci/unpack-and-test.sh'
+
+  release_dry_run:
+    runs-on: ubuntu-latest
+    needs: [ create_pre_release, prebuild ]
+    if: github.ref == 'refs/heads/master'
+
+    env:
+      NODE_VERSION: 20
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: "release - dry run: ${{ env.DRY_RUN }}"
+        id: publish
+        run: script/ci/release.sh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DRY_RUN: true
+
+      - run: echo "New Release will be v${{ steps.publish.outputs.version }}"
