@@ -17,4 +17,23 @@ npm ci --ignore-scripts
 export npm_config_target=${NODE_VERSION}
 npx --yes prebuildify@${PREBUILDIFY_VERSION} --napi --libc musl --tag-libc --strip --name ${PREBUILD_NAME}
 ls prebuilds/**/*
+case $ARCH in
+    aarch64)
+    echo "aarch64"
+    tar -czf prebuilds/linux-arm64-musl.tar.gz prebuilds/linux-arm64
+    ;;
+    x86_64)
+    tar -czf prebuilds/linux-x64-musl.tar.gz prebuilds/linux-x64
+    ;;
+    *)
+    echo "Unsupported architecture: $ARCH"
+    exit 1
+    ;;
+esac
+;;
+*)
+echo "Unsupported OS: $OS"
+exit 1
+;;
+esac
 rm -rf ffi build

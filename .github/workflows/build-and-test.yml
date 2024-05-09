@@ -70,7 +70,7 @@ jobs:
 
 
       - name: Set up QEMU
-        if: ${{ matrix.docker == true && matrix.alpine == true && matrix.arch == 'arm64' }}
+        if: ${{ matrix.docker == true && matrix.arch == 'arm64' }}
         uses: docker/setup-qemu-action@v3
       - if: ${{ matrix.docker == true && matrix.alpine == true }}
         name: prebuild linux ${{ matrix.arch }} musl
@@ -156,9 +156,8 @@ jobs:
       # Related comment: https://github.com/phusion/passenger/issues/2288#issuecomment-1387625121 
 
       - name: Set up QEMU
-        if: ${{ matrix.docker == true && matrix.alpine == true && matrix.arch == 'arm64' }}
+        if: ${{ matrix.docker == true && matrix.arch == 'arm64' }}
         uses: docker/setup-qemu-action@v3
-
 
       - if: ${{ matrix.docker == true && matrix.alpine != true }}
         name: test arm64
