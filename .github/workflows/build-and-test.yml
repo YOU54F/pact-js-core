@@ -74,8 +74,8 @@ jobs:
       #   uses: docker/setup-qemu-action@v3
 
       - name: test conditions
-        if: ${{ matrix.docker == 'true' }}
-        run: echo foo
+        if: ${{ matrix.docker == 'true' && matrix.alpine == 'true' && matrix.arch == 'arm64' }}
+        run: uname -a
 
       # - if: ${{ matrix.docker == 'true' && matrix.alpine == 'true' }}
       #   name: prebuild linux ${{ matrix.arch }} musl
