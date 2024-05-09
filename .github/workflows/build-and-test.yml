@@ -35,6 +35,20 @@ jobs:
           ubuntu-latest,
           windows-latest
           ]
+        docker: [false]
+        include:
+          - os: ubuntu-latest
+            docker: true
+            alpine: false
+            arch: arm64
+          - os: ubuntu-latest
+            docker: true
+            alpine: true
+            arch: arm64
+          - os: ubuntu-latest
+            docker: true
+            alpine: true
+            arch: amd64
 
     env:
       NODE_VERSION: ${{ matrix.node-version }}
@@ -54,26 +68,23 @@ jobs:
 
 
       - name: Set up QEMU
-        if: runner.os == 'Linux'
+        if: ${{ matrix.docker == true }} && ${{ matrix.alpine == true }} && ${{ matrix.arch == 'aarch64' }}
         uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        if: runner.os == 'Linux'
-        uses: docker/setup-buildx-action@v3
 
-      - if: runner.os == 'Linux'
-        name: prebuild linux amd64 musl
-        run: docker run -v $PWD:/home --platform linux/amd64 -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash && cd /home && /home/script/ci/prebuild-alpine.sh && rm -rf ffi node_modules'
-        # run: docker run -v $PWD:/home --platform linux/amd64 -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash && cd /home && /home/script/ci/prebuild-alpine.sh && npm run build && npm test && rm -rf ffi'
-      - if: runner.os == 'Linux'
-        name: prebuild linux arm64 musl
-        run: docker run -v $PWD:/home --platform linux/arm64 -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash && cd /home && /home/script/ci/prebuild-alpine.sh && rm -rf ffi node_modules'
-        # run: docker run -v $PWD:/home --platform linux/arm64 -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash && cd /home && /home/script/ci/prebuild-alpine.sh && npm run build && npm test && rm -rf ffi'
-      - if: runner.os == 'Linux'
-        name: prebuild linux arm64
-        run: docker run -v $PWD:/home --platform linux/arm64 --rm node:20 bin/bash -c 'cd /home && /home/script/ci/prebuild.sh && rm -rf ffi node_modules'
+      - if: ${{ matrix.docker == true }} && ${{ matrix.alpine == true }}
+        name: prebuild linux ${{ matrix.arch }} musl
+        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash && cd /home && bash -c "/home/script/ci/prebuild-alpine.sh" && rm -rf ffi node_modules'
+
+      - if: ${{ matrix.docker == true }} && ${{ matrix.alpine == false }}
+        name: prebuild linux ${{ matrix.arch }}
+        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e CIRRUS_CI=true --rm node:20 bin/sh -c 'cd /home && /home/script/ci/prebuild-alpine.sh && rm -rf ffi node_modules'
+
       - run: sudo chown -R $(id -u):$(id -g) prebuilds
-        if: runner.os == 'Linux'
+        if: ${{ matrix.docker == true }}
+    
       - run: ./script/ci/prebuild.sh
+        if: ${{ matrix.docker != true }}
+
       - name: Upload prebuild for ${{ runner.os }}-${{ runner.arch }}
         uses: actions/upload-artifact@v3
         with:
@@ -94,7 +105,27 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [16,18,20]
-        os: [macos-14, macos-12, ubuntu-latest,windows-latest]
+        os: [
+          macos-14,
+          macos-12,
+          ubuntu-latest,
+          windows-latest
+          ]
+        docker: [false]
+        include:
+          - os: ubuntu-latest
+            docker: true
+            alpine: false
+            arch: arm64
+          - os: ubuntu-latest
+            docker: true
+            alpine: true
+            arch: arm64
+          - os: ubuntu-latest
+            docker: true
+            alpine: true
+            arch: amd64
+  
 
     env:
       NODE_VERSION: ${{ matrix.node-version }}
@@ -115,26 +146,30 @@ jobs:
 
       - if: runner.os == 'Windows'
         run: echo "ONLY_DOWNLOAD_PACT_FOR_WINDOWS=true" >> $GITHUB_ENV
+
       - run: LOG_LEVEL=debug ./script/ci/unpack-and-test.sh
+        if: ${{ matrix.docker != true }}
 
 
       # Linux aarch64 tests are skipped as QEMU fails when executing the ruby binaries
       # Related comment: https://github.com/phusion/passenger/issues/2288#issuecomment-1387625121 
+
       - name: Set up QEMU
-        if: runner.os == 'Linux'
+        if: ${{ matrix.docker == true }} && ${{ matrix.alpine == true }} && ${{ matrix.arch == 'arm64' }}
         uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        if: runner.os == 'Linux'
-        uses: docker/setup-buildx-action@v3
-      - if: runner.os == 'Linux'
+
+
+      - if: ${{ matrix.docker == true }} && ${{ matrix.alpine == false }}
         name: test arm64
-        run: docker run -v $PWD:/home --platform linux/arm64 --rm node:20 bin/bash -c 'cd /home && /home/script/ci/unpack-and-test.sh'
-      - if: runner.os == 'Linux'
+        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} --rm node:20 bin/bash -c 'cd /home && /home/script/ci/unpack-and-test.sh'
+
+      - if: ${{ matrix.docker == true }} && ${{ matrix.alpine == true }} && ${{ matrix.arch == 'amd64' }}
         name: test linux amd64 musl
-        run: docker run -v $PWD:/home --platform linux/amd64 -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash && cd /home && /home/script/ci/unpack-and-test.sh'
-      - if: runner.os == 'Linux'
+        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash curl gcompat && cd /home && /home/script/ci/unpack-and-test.sh'
+
+      - if: ${{ matrix.docker == true }} && ${{ matrix.alpine == false }} && ${{ matrix.arch == 'arm64' }}
         name: test linux arm64 musl
-        run: docker run -v $PWD:/home --platform linux/arm64 -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash && cd /home && /home/script/ci/unpack-and-test.sh''
+        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash curl libc6-compat gcompat && cd /home && /home/script/ci/unpack-and-test.sh'
 
   release_dry_run:
     runs-on: ubuntu-latest
