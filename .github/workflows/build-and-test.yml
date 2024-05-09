@@ -60,7 +60,7 @@ jobs:
             docker: false
             alpine: false
   
-    name: ${{ matrix.docker == true && matrix.alpine == true && 'linux-musl' || matrix.docker == true && matrix.alpine == false && 'linux' || matrix.os }}-${{ matrix.arch }}
+    name: Prebuild ${{ matrix.docker == true && matrix.alpine == true && 'linux-musl' || matrix.docker == true && matrix.alpine == false && 'linux' || matrix.os }}-${{ matrix.arch }}
 
     env:
       NODE_VERSION: ${{ matrix.node-version }}
@@ -137,6 +137,7 @@ jobs:
             alpine: true
             arch: amd64
   
+    name: Test ${{ matrix.docker == true && matrix.alpine == true && 'linux-musl' || matrix.docker == true && matrix.alpine == false && 'linux' || matrix.os }}-${{ matrix.arch }}
 
     env:
       NODE_VERSION: ${{ matrix.node-version }}
@@ -169,17 +170,21 @@ jobs:
         if: ${{ matrix.docker == true && matrix.arch == 'arm64' }}
         uses: docker/setup-qemu-action@v3
 
-      - if: ${{ matrix.docker == true && matrix.alpine != true }}
+      - if: ${{ matrix.docker == true && matrix.alpine != true && matrix.arch == 'arm64' }}
         name: test arm64
         run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} --rm node:20 bin/bash -c 'cd /home && /home/script/ci/unpack-and-test.sh'
+        env:
+          SKIP_STANDALONE_TESTS: true
 
       - if: ${{ matrix.docker == true && matrix.alpine == true && matrix.arch == 'amd64' }}
         name: test linux amd64 musl
         run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash curl gcompat && cd /home && /home/script/ci/unpack-and-test.sh'
 
-      - if: ${{ matrix.docker == true && matrix.alpine == false && matrix.arch == 'arm64' }}
+      - if: ${{ matrix.docker == true && matrix.alpine == true && matrix.arch == 'arm64' }}
         name: test linux arm64 musl
         run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash curl libc6-compat gcompat && cd /home && /home/script/ci/unpack-and-test.sh'
+        env:
+          SKIP_STANDALONE_TESTS: true
 
   release_dry_run:
     runs-on: ubuntu-latest
