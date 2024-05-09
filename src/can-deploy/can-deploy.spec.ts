@@ -131,7 +131,7 @@ const skipTests = process.env['SKIP_STANDALONE_TESTS'] === 'true';
       const opts: CanDeployOptions = {
         pactBroker: `http://localhost:${PORT}`,
         pacticipants: [{ name: 'Foo', version: '4' }],
-        output: 'table'
+        output: 'table',
       };
       const ding = canDeployFactory(opts);
 
@@ -146,7 +146,7 @@ const skipTests = process.env['SKIP_STANDALONE_TESTS'] === 'true';
         const opts: CanDeployOptions = {
           pactBroker: `http://localhost:${PORT}`,
           pacticipants: [{ name: 'Foo', latest: true }],
-          output: 'table'
+          output: 'table',
         };
         const ding = canDeployFactory(opts);
 
@@ -160,7 +160,7 @@ const skipTests = process.env['SKIP_STANDALONE_TESTS'] === 'true';
         const opts: CanDeployOptions = {
           pactBroker: `http://localhost:${PORT}`,
           pacticipants: [{ name: 'FooFail', latest: true }],
-          output: 'table'
+          output: 'table',
         };
         const ding = canDeployFactory(opts);
 
@@ -176,7 +176,7 @@ const skipTests = process.env['SKIP_STANDALONE_TESTS'] === 'true';
         const opts: CanDeployOptions = {
           pactBroker: `http://localhost:${PORT}`,
           pacticipants: [{ name: 'Foo', latest: 'tag' }],
-          output: 'table'
+          output: 'table',
         };
         const ding = canDeployFactory(opts);
 
@@ -190,7 +190,7 @@ const skipTests = process.env['SKIP_STANDALONE_TESTS'] === 'true';
         const opts: CanDeployOptions = {
           pactBroker: `http://localhost:${PORT}`,
           pacticipants: [{ name: 'FooFail', latest: 'tag' }],
-          output: 'table'
+          output: 'table',
         };
         const ding = canDeployFactory(opts);
 
@@ -207,7 +207,7 @@ const skipTests = process.env['SKIP_STANDALONE_TESTS'] === 'true';
           pactBroker: `http://localhost:${PORT}`,
           pacticipants: [{ name: 'Foo', latest: 'tag' }],
           to: 'prod',
-          output: 'table'
+          output: 'table',
         };
         const ding = canDeployFactory(opts);
 
@@ -222,7 +222,7 @@ const skipTests = process.env['SKIP_STANDALONE_TESTS'] === 'true';
           pactBroker: `http://localhost:${PORT}`,
           pacticipants: [{ name: 'FooFail', latest: 'tag' }],
           to: 'prod',
-          output: 'table'
+          output: 'table',
         };
         const ding = canDeployFactory(opts);
 
@@ -237,7 +237,7 @@ const skipTests = process.env['SKIP_STANDALONE_TESTS'] === 'true';
       const opts: CanDeployOptions = {
         pactBroker: `http://localhost:${PORT}`,
         pacticipants: [{ name: 'FooFail', version: '4' }],
-        output: 'table'
+        output: 'table',
       };
       const ding = canDeployFactory(opts);
 
