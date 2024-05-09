@@ -30,8 +30,8 @@ jobs:
       matrix:
         node-version: [20]
         os: [
-          macos-14,
-          macos-12,
+          # macos-14,
+          # macos-12,
           ubuntu-latest,
           windows-latest
           ]
@@ -51,6 +51,16 @@ jobs:
             docker: true
             alpine: true
             arch: amd64
+          - os: macos-14
+            docker: false
+            alpine: false
+            arch: arm64
+          - os: macos-12
+            arch: amd64
+            docker: false
+            alpine: false
+  
+    name: ${{ matrix.docker == true && matrix.alpine == true && 'linux-musl' || matrix.docker == true && matrix.alpine == false && 'linux' || matrix.os }}-${{ matrix.arch }}
 
     env:
       NODE_VERSION: ${{ matrix.node-version }}

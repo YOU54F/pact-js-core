@@ -31,10 +31,4 @@ case $ARCH in
     exit 1
     ;;
 esac
-;;
-*)
-echo "Unsupported OS: $OS"
-exit 1
-;;
-esac
 rm -rf ffi build
