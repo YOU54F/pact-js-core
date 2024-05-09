@@ -17,6 +17,7 @@ npm ci --ignore-scripts
 export npm_config_target=${NODE_VERSION}
 npx --yes prebuildify@${PREBUILDIFY_VERSION} --napi --libc musl --tag-libc --strip --name ${PREBUILD_NAME}
 ls prebuilds/**/*
+ARCH=$(uname -m | tr '[:upper:]' '[:lower:]')
 case $ARCH in
     aarch64)
     echo "aarch64"
