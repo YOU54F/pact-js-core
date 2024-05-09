@@ -13,8 +13,8 @@ import brokerMock from '../../test/integration/broker-mock';
 
 const { expect } = chai;
 chai.use(chaiAsPromised);
-
-describe('CanDeploy Spec', () => {
+const skipTests = process.env['SKIP_STANDALONE_TESTS'] === 'true';
+(skipTests ? describe.skip : describe)('CanDeploy Spec', () => {
   const PORT = Math.floor(Math.random() * 999) + 9000;
   let server: http.Server;
   let absolutePath: string;
@@ -131,6 +131,7 @@ describe('CanDeploy Spec', () => {
       const opts: CanDeployOptions = {
         pactBroker: `http://localhost:${PORT}`,
         pacticipants: [{ name: 'Foo', version: '4' }],
+        output: 'table'
       };
       const ding = canDeployFactory(opts);
 
@@ -145,6 +146,7 @@ describe('CanDeploy Spec', () => {
         const opts: CanDeployOptions = {
           pactBroker: `http://localhost:${PORT}`,
           pacticipants: [{ name: 'Foo', latest: true }],
+          output: 'table'
         };
         const ding = canDeployFactory(opts);
 
@@ -158,6 +160,7 @@ describe('CanDeploy Spec', () => {
         const opts: CanDeployOptions = {
           pactBroker: `http://localhost:${PORT}`,
           pacticipants: [{ name: 'FooFail', latest: true }],
+          output: 'table'
         };
         const ding = canDeployFactory(opts);
 
@@ -173,6 +176,7 @@ describe('CanDeploy Spec', () => {
         const opts: CanDeployOptions = {
           pactBroker: `http://localhost:${PORT}`,
           pacticipants: [{ name: 'Foo', latest: 'tag' }],
+          output: 'table'
         };
         const ding = canDeployFactory(opts);
 
@@ -186,6 +190,7 @@ describe('CanDeploy Spec', () => {
         const opts: CanDeployOptions = {
           pactBroker: `http://localhost:${PORT}`,
           pacticipants: [{ name: 'FooFail', latest: 'tag' }],
+          output: 'table'
         };
         const ding = canDeployFactory(opts);
 
@@ -202,6 +207,7 @@ describe('CanDeploy Spec', () => {
           pactBroker: `http://localhost:${PORT}`,
           pacticipants: [{ name: 'Foo', latest: 'tag' }],
           to: 'prod',
+          output: 'table'
         };
         const ding = canDeployFactory(opts);
 
@@ -216,6 +222,7 @@ describe('CanDeploy Spec', () => {
           pactBroker: `http://localhost:${PORT}`,
           pacticipants: [{ name: 'FooFail', latest: 'tag' }],
           to: 'prod',
+          output: 'table'
         };
         const ding = canDeployFactory(opts);
 
@@ -230,6 +237,7 @@ describe('CanDeploy Spec', () => {
       const opts: CanDeployOptions = {
         pactBroker: `http://localhost:${PORT}`,
         pacticipants: [{ name: 'FooFail', version: '4' }],
+        output: 'table'
       };
       const ding = canDeployFactory(opts);
 
@@ -243,7 +251,6 @@ describe('CanDeploy Spec', () => {
       const opts: CanDeployOptions = {
         pactBroker: `http://localhost:${PORT}`,
         pacticipants: [{ name: 'Foo', version: '4' }],
-        output: 'json',
       };
       const ding = canDeployFactory(opts);
 
@@ -257,7 +264,6 @@ describe('CanDeploy Spec', () => {
       const opts: CanDeployOptions = {
         pactBroker: `http://localhost:${PORT}`,
         pacticipants: [{ name: 'FooFail', version: '4' }],
-        output: 'json',
       };
       const ding = canDeployFactory(opts);
 
