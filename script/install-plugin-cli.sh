@@ -15,40 +15,12 @@ detect_osarch() {
     # detect_musl
     case $(uname -sm) in
         'Linux x86_64')
-            if ldd /bin/ls >/dev/null 2>&1; then
-                ldd_output=$(ldd /bin/ls)
-                case "$ldd_output" in
-                    *musl*) 
-                        os='linux'
-                        arch='x86_64-musl'
-                        ;;
-                    *) 
-                        os='linux'
-                        arch='x86_64'
-                        ;;
-                esac
-            else
-                os='linux'
-                arch='x86_64'
-            fi
+            os='linux'
+            arch='x86_64'
             ;;
         'Linux aarch64')
-            if ldd /bin/ls >/dev/null 2>&1; then
-                ldd_output=$(ldd /bin/ls)
-                case "$ldd_output" in
-                    *musl*) 
-                        os='linux'
-                        arch='aarch64-musl'
-                        ;;
-                    *) 
-                        os='linux'
-                        arch='aarch64'
-                        ;;
-                esac
-            else
-                os='linux'
-                arch='aarch64'
-            fi
+            os='linux'
+            arch='aarch64'
             ;;
         'Darwin x86' | 'Darwin x86_64')
             os='osx'
@@ -81,6 +53,7 @@ if [ ! -f ~/.pact/bin/pact-plugin-cli ]; then
     echo "        Downloading from: ${DOWNLOAD_LOCATION}"
     curl -L -o ~/.pact/bin/pact-plugin-cli-${os}-${arch}.gz "${DOWNLOAD_LOCATION}"
     echo "        Downloaded $(file ~/.pact/bin/pact-plugin-cli-${os}-${arch}.gz)"
-    gunzip -N -f ~/.pact/bin/pact-plugin-cli-${os}-${arch}.gz
+    gunzip -f ~/.pact/bin/pact-plugin-cli-${os}-${arch}.gz
+    mv ~/.pact/bin/pact-plugin-cli-${os}-${arch} ~/.pact/bin/pact-plugin-cli
     chmod +x ~/.pact/bin/pact-plugin-cli
 fi

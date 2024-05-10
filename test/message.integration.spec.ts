@@ -146,7 +146,11 @@ describe('FFI integration test for the Message Consumer API', () => {
     (skipPluginTests ? describe.skip : describe)(
       'with plugin contents (gRPC)',
       () => {
-        const protoFile = `${__dirname}/integration/grpc/route_guide.proto`;
+        let protoFile = `${__dirname}/integration/grpc/route_guide.proto`;
+        if (process.platform === 'win32') {
+          const escapedProtoFile = protoFile.replace(/\\/g, '\\\\');
+          protoFile = escapedProtoFile;
+        }
 
         let port: number;
 
