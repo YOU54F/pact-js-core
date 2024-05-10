@@ -142,17 +142,20 @@ describe('FFI integration test for the Message Consumer API', () => {
       });
     });
 
-    describe.skip('with plugin contents (gRPC)', () => {
-      const protoFile = `${__dirname}/integration/grpc/route_guide.proto`;
+    const skipPluginTests = process.env['SKIP_PLUGIN_TESTS'] === 'true';
+    (skipPluginTests ? describe.skip : describe)(
+      'with plugin contents (gRPC)',
+      () => {
+        const protoFile = `${__dirname}/integration/grpc/route_guide.proto`;
 
-      let port: number;
+        let port: number;
 
-      afterEach(() => {
-        pact.cleanupPlugins();
-      });
+        afterEach(() => {
+          pact.cleanupPlugins();
+        });
 
-      beforeEach(() => {
-        const grpcInteraction = `{
+        beforeEach(() => {
+          const grpcInteraction = `{
           "pact:proto": "${protoFile}",
           "pact:proto-service": "RouteGuide/GetFeature",
           "pact:content-type": "application/protobuf",
@@ -169,36 +172,37 @@ describe('FFI integration test for the Message Consumer API', () => {
           }
         }`;
 
-        pact.addMetadata('pact-node', 'meta-key', 'meta-val');
-        pact.addPlugin('protobuf', '0.1.14');
+          pact.addMetadata('pact-node', 'meta-key', 'meta-val');
+          pact.addPlugin('protobuf', '0.3.15');
 
-        const message = pact.newSynchronousMessage('a grpc test 1');
-        message.given('some state 1');
-        message.withPluginRequestResponseInteractionContents(
-          'application/protobuf',
-          grpcInteraction
-        );
-        message.withMetadata('meta-key 1', 'meta-val 2');
+          const message = pact.newSynchronousMessage('a grpc test 1');
+          message.given('some state 1');
+          message.withPluginRequestResponseInteractionContents(
+            'application/protobuf',
+            grpcInteraction
+          );
+          message.withMetadata('meta-key 1', 'meta-val 2');
 
-        port = pact.pactffiCreateMockServerForTransport(
-          '127.0.0.1',
-          'grpc',
-          ''
-        );
-      });
+          port = pact.pactffiCreateMockServerForTransport(
+            '127.0.0.1',
+            'grpc',
+            ''
+          );
+        });
 
-      it('generates a pact with success', async () => {
-        const feature: any = await getFeature(`127.0.0.1:${port}`, protoFile);
-        expect(feature.name).to.eq('Big Tree');
+        it('generates a pact with success', async () => {
+          const feature: any = await getFeature(`127.0.0.1:${port}`, protoFile);
+          expect(feature.name).to.eq('Big Tree');
 
-        const res = pact.mockServerMatchedSuccessfully(port);
-        expect(res).to.eq(true);
+          const res = pact.mockServerMatchedSuccessfully(port);
+          expect(res).to.eq(true);
 
-        const mismatches = pact.mockServerMismatches(port);
-        expect(mismatches.length).to.eq(0);
+          const mismatches = pact.mockServerMismatches(port);
+          expect(mismatches.length).to.eq(0);
 
-        pact.writePactFile(path.join(__dirname, '__testoutput__'));
-      });
-    });
+          pact.writePactFile(path.join(__dirname, '__testoutput__'));
+        });
+      }
+    );
   });
 });
