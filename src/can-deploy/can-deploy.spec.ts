@@ -13,8 +13,8 @@ import brokerMock from '../../test/integration/broker-mock';
 
 const { expect } = chai;
 chai.use(chaiAsPromised);
-const skipTests = process.env['SKIP_STANDALONE_TESTS'] === 'true';
-(skipTests ? describe.skip : describe)('CanDeploy Spec', () => {
+const skipStandaloneTests = process.env['SKIP_STANDALONE_TESTS'] === 'true';
+(skipStandaloneTests ? describe.skip : describe)('CanDeploy Spec', () => {
   const PORT = Math.floor(Math.random() * 999) + 9000;
   let server: http.Server;
   let absolutePath: string;

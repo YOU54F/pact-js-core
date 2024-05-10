@@ -7,8 +7,8 @@ import stubFactory from './stub';
 chai.use(chaiAsPromised);
 const { expect } = chai;
 
-const skipTests = process.env['SKIP_STANDALONE_TESTS'] === 'true';
-(skipTests ? describe.skip : describe)('Stub Spec', () => {
+const skipStandaloneTests = process.env['SKIP_STANDALONE_TESTS'] === 'true';
+(skipStandaloneTests ? describe.skip : describe)('Stub Spec', () => {
   let stub: any;
   const validDefaults = {
     pactUrls: [
