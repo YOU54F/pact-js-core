@@ -184,7 +184,7 @@ jobs:
 
       - if: ${{ matrix.docker == true && matrix.alpine == true && matrix.arch == 'arm64' }}
         name: test linux arm64 musl
-        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e SKIP_STANDALONE_TESTS --rm node:20-alpine bin/sh -c 'apk add bash curl libc6-compat gcompat shared-mime-info file && cd /home && /home/script/ci/unpack-and-test.sh'
+        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e SKIP_STANDALONE_TESTS --rm node:20-alpine bin/sh -c 'apk add bash curl libc6-compat gcompat shared-mime-info file protoc protobuf-dev && cd /home && /home/script/ci/unpack-and-test.sh'
         env:
           SKIP_STANDALONE_TESTS: true
 
