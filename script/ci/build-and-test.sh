@@ -19,17 +19,17 @@ fi
 
 node --version
 npm --version
-if [[ ${CI:-} == 'true' && "$(uname -s)" == 'Linux' && "$(uname -m)" == 'aarch64' && "$(node --version)" == *18* ]]; then
-# npm ERR! code ECONNRESET
-# npm ERR! errno ECONNRESET
-# npm ERR! network request to https://registry.npmjs.org/ failed, reason: Client network socket disconnected before secure TLS connection was established
-  npm config set maxsockets 1
-fi
-if [[ ${CI:-} == 'true' && "$(uname -s)" == 'Linux' && "$(uname -m)" == 'aarch64' && "$(node --version)" == *16* ]]; then
-  # Setting the cache location is a workaround for node 16 install errors https://github.com/npm/cli/issues/5114
-  npm config set cache /tmp
-fi
-npm ci --ignore-scripts
+# if [[ ${CI:-} == 'true' && "$(uname -s)" == 'Linux' && "$(uname -m)" == 'aarch64' && "$(node --version)" == *18* ]]; then
+# # npm ERR! code ECONNRESET
+# # npm ERR! errno ECONNRESET
+# # npm ERR! network request to https://registry.npmjs.org/ failed, reason: Client network socket disconnected before secure TLS connection was established
+#   npm config set maxsockets 1
+# fi
+# if [[ ${CI:-} == 'true' && "$(uname -s)" == 'Linux' && "$(uname -m)" == 'aarch64' && "$(node --version)" == *16* ]]; then
+#   # Setting the cache location is a workaround for node 16 install errors https://github.com/npm/cli/issues/5114
+#   npm config set cache /tmp
+# fi
+npm ci --ignore-scripts --maxsockets 1 
 
 npm run format:check
 npm run lint
