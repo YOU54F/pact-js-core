@@ -21,17 +21,8 @@ const { expect } = chai;
 const HOST = '127.0.0.1';
 
 const isWin = process.platform === 'win32';
-const isLinux = process.platform === 'linux';
 const isDarwinArm64 = process.platform === 'darwin' && process.arch === 'arm64';
-const isDarwinX64 = process.platform === 'darwin' && process.arch === 'x64';
-const isLinuxArm64 = process.platform === 'linux' && process.arch === 'arm64';
-const isCirrusCi = process.env['CIRRUS_CI'] === 'true';
-const usesOctetStream =
-  isLinuxArm64 ||
-  isWin ||
-  isDarwinArm64 ||
-  (isCirrusCi && isLinux) ||
-  (isCirrusCi && isDarwinX64);
+const usesOctetStream = isWin || isDarwinArm64;
 
 describe('FFI integration test for the HTTP Consumer API', () => {
   setLogLevel('trace');
@@ -264,78 +255,82 @@ describe('FFI integration test for the HTTP Consumer API', () => {
   });
 
   // Should only run this if the plugin is installed
-  describe.skip('using a plugin (protobufs)', () => {
-    const protoFile = `${__dirname}/integration/plugin.proto`;
+  const skipPluginTests = process.env['SKIP_PLUGIN_TESTS'] === 'true';
+  (skipPluginTests ? describe.skip : describe)(
+    'using a plugin (protobufs)',
+    () => {
+      const protoFile = `${__dirname}/integration/plugin.proto`;
 
-    beforeEach(() => {
-      pact = makeConsumerPact(
-        'foo-consumer',
-        'bar-provider',
-        FfiSpecificationVersion['SPECIFICATION_VERSION_V3']
-      );
-      pact.addPlugin('protobuf', '0.1.14');
+      beforeEach(() => {
+        pact = makeConsumerPact(
+          'foo-consumer',
+          'bar-provider',
+          FfiSpecificationVersion['SPECIFICATION_VERSION_V3']
+        );
+        pact.addPlugin('protobuf', '0.3.15');
 
-      const interaction = pact.newInteraction('some description');
-      const protobufContents = {
-        'pact:proto': protoFile,
-        'pact:message-type': 'InitPluginRequest',
-        'pact:content-type': 'application/protobuf',
-        implementation: "notEmpty('pact-js-driver')",
-        version: "matching(semver, '0.0.0')",
-      };
+        const interaction = pact.newInteraction('some description');
+        const protobufContents = {
+          'pact:proto': protoFile,
+          'pact:message-type': 'InitPluginRequest',
+          'pact:content-type': 'application/protobuf',
+          implementation: "notEmpty('pact-js-driver')",
+          version: "matching(semver, '0.0.0')",
+        };
 
-      interaction.uponReceiving('a request to get a protobuf');
-      interaction.given('protobuf state');
-      interaction.withRequest('GET', '/protobuf');
-      interaction.withPluginResponseInteractionContents(
-        'application/protobuf',
-        JSON.stringify(protobufContents)
-      );
-      interaction.withStatus(200);
+        interaction.uponReceiving('a request to get a protobuf');
+        interaction.given('protobuf state');
+        interaction.withRequest('GET', '/protobuf');
+        interaction.withPluginResponseInteractionContents(
+          'application/protobuf',
+          JSON.stringify(protobufContents)
+        );
+        interaction.withStatus(200);
 
-      port = pact.createMockServer(HOST);
-    });
+        port = pact.createMockServer(HOST);
+      });
 
-    afterEach(() => {
-      pact.cleanupPlugins();
-    });
+      afterEach(() => {
+        pact.cleanupPlugins();
+      });
 
-    it('generates a pact with success', async () => {
-      const root = await load(protoFile);
+      it('generates a pact with success', async () => {
+        const root = await load(protoFile);
 
-      // Obtain a message type
-      const InitPluginRequest = root.lookupType(
-        'io.pact.plugin.InitPluginRequest'
-      );
+        // Obtain a message type
+        const InitPluginRequest = root.lookupType(
+          'io.pact.plugin.InitPluginRequest'
+        );
 
-      return axios
-        .request({
-          baseURL: `http://${HOST}:${port}`,
-          method: 'GET',
-          url: '/protobuf',
-          responseType: 'arraybuffer',
-        })
-        .then((res) => {
-          const message: any = InitPluginRequest.decode(res.data);
-          expect(message.implementation).to.equal('pact-js-driver');
-          expect(message.version).to.equal('0.0.0');
-        })
-        .then(() => {
-          expect(pact.mockServerMatchedSuccessfully(port)).to.be.true;
-        })
-        .then(() => {
-          // You don't have to call this, it's just here to check it works
-          const mismatches = pact.mockServerMismatches(port);
-          expect(mismatches).to.have.length(0);
-        })
-        .then(() => {
-          pact.writePactFile(path.join(__dirname, '__testoutput__'));
-        })
-        .then(() => {
-          pact.cleanupMockServer(port);
-        });
-    });
-  });
+        return axios
+          .request({
+            baseURL: `http://${HOST}:${port}`,
+            method: 'GET',
+            url: '/protobuf',
+            responseType: 'arraybuffer',
+          })
+          .then((res) => {
+            const message: any = InitPluginRequest.decode(res.data);
+            expect(message.implementation).to.equal('pact-js-driver');
+            expect(message.version).to.equal('0.0.0');
+          })
+          .then(() => {
+            expect(pact.mockServerMatchedSuccessfully(port)).to.be.true;
+          })
+          .then(() => {
+            // You don't have to call this, it's just here to check it works
+            const mismatches = pact.mockServerMismatches(port);
+            expect(mismatches).to.have.length(0);
+          })
+          .then(() => {
+            pact.writePactFile(path.join(__dirname, '__testoutput__'));
+          })
+          .then(() => {
+            pact.cleanupMockServer(port);
+          });
+      });
+    }
+  );
 
   describe('with multipart data', () => {
     const form = new FormData();
