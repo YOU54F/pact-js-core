@@ -76,11 +76,11 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - if: ${{ matrix.docker == true && matrix.alpine == true }}
         name: prebuild linux ${{ matrix.arch }} musl
-        run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash && cd /home/node/app && bash -c "/home/node/app/script/ci/prebuild-alpine.sh" && rm -rf ffi node_modules'
+        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e CIRRUS_CI=true --rm node:20-alpine bin/sh -c 'apk add bash && cd /home && bash -c "/home/script/ci/prebuild-alpine.sh" && rm -rf ffi node_modules'
 
       - if: ${{ matrix.docker == true && matrix.alpine != true }}
         name: prebuild linux ${{ matrix.arch }}
-        run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} -e CIRRUS_CI=true --rm node:20 bin/bash -c 'cd /home/node/app && /home/node/app/script/ci/prebuild.sh && rm -rf ffi node_modules'
+        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e CIRRUS_CI=true --rm node:20 bin/bash -c 'cd /home && /home/script/ci/prebuild.sh && rm -rf ffi node_modules'
 
       - run: sudo chown -R $(id -u):$(id -g) prebuilds
         if: ${{ matrix.docker == true }}
@@ -143,11 +143,6 @@ jobs:
             node-version: 20
           - os: ubuntu-latest
             docker: true
-            alpine: false
-            arch: arm64
-            node-version: 18
-          - os: ubuntu-latest
-            docker: true
             alpine: true
             arch: arm64
             node-version: 18
@@ -156,21 +151,26 @@ jobs:
             alpine: true
             arch: amd64
             node-version: 18
-          - os: ubuntu-latest
-            docker: true
-            alpine: false
-            arch: arm64
-            node-version: 16
-          - os: ubuntu-latest
-            docker: true
-            alpine: true
-            arch: arm64
-            node-version: 16
-          - os: ubuntu-latest
-            docker: true
-            alpine: true
-            arch: amd64
-            node-version: 16
+          # - os: ubuntu-latest
+          #   docker: true
+          #   alpine: false
+          #   arch: arm64
+          #   node-version: 18
+          # - os: ubuntu-latest
+          #   docker: true
+          #   alpine: false
+          #   arch: arm64
+          #   node-version: 16
+          # - os: ubuntu-latest
+          #   docker: true
+          #   alpine: true
+          #   arch: arm64
+          #   node-version: 16
+          # - os: ubuntu-latest
+          #   docker: true
+          #   alpine: true
+          #   arch: amd64
+          #   node-version: 16
 
     name: Test ${{ matrix.docker == true && matrix.alpine == true && 'linux-musl' || matrix.docker == true && matrix.alpine == false && 'linux' || matrix.os }}-${{ matrix.arch }}-node-${{ matrix.node-version }}
 
@@ -206,34 +206,19 @@ jobs:
         if: ${{ matrix.docker == true && matrix.arch == 'arm64' }}
         uses: docker/setup-qemu-action@v3
 
-      - if: ${{ matrix.docker == true && matrix.alpine != true && matrix.arch == 'arm64' && matrix.node-version != 16 }}
+      - if: ${{ matrix.docker == true && matrix.alpine != true && matrix.arch == 'arm64' }}
         name: test arm64
-        run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} -e SKIP_STANDALONE_TESTS --rm node:${{ matrix.node-version }} bin/bash -c 'apt install -y shared-mime-info && cd /home/node/app && /home/node/app/script/ci/unpack-and-test.sh'
+        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e SKIP_STANDALONE_TESTS --rm node:${{ matrix.node-version }} bin/bash -c 'apt install -y shared-mime-info && cd /home && /home/script/ci/unpack-and-test.sh'
         env:
           SKIP_STANDALONE_TESTS: true
 
-      - if: ${{ matrix.docker == true && matrix.alpine == true && matrix.arch == 'amd64' && matrix.node-version != 16 }}
+      - if: ${{ matrix.docker == true && matrix.alpine == true && matrix.arch == 'amd64' }}
         name: test linux amd64 musl
-        run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'apk add bash curl gcompat shared-mime-info file && cd /home/node/app && /home/node/app/script/ci/unpack-and-test.sh'
+        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'apk add bash curl gcompat shared-mime-info file && cd /home && /home/script/ci/unpack-and-test.sh'
 
-      - if: ${{ matrix.docker == true && matrix.alpine == true && matrix.arch == 'arm64' && matrix.node-version != 16 }}
+      - if: ${{ matrix.docker == true && matrix.alpine == true && matrix.arch == 'arm64' }}
         name: test linux arm64 musl
-        run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} -e SKIP_STANDALONE_TESTS --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'apk add bash curl libc6-compat gcompat shared-mime-info file protoc protobuf-dev && cd /home/node/app && /home/node/app/script/ci/unpack-and-test.sh'
-        env:
-          SKIP_STANDALONE_TESTS: true
-      - if: ${{ matrix.docker == true && matrix.alpine != true && matrix.arch == 'arm64' && matrix.node-version == 16 }}
-        name: test arm64
-        run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} -e SKIP_STANDALONE_TESTS --rm node:${{ matrix.node-version }} bin/bash -c 'npm config set cache /tmp && apt install -y shared-mime-info && cd /home/node/app && /home/node/app/script/ci/unpack-and-test.sh'
-        env:
-          SKIP_STANDALONE_TESTS: true
-
-      - if: ${{ matrix.docker == true && matrix.alpine == true && matrix.arch == 'amd64' && matrix.node-version == 16 }}
-        name: test linux amd64 musl
-        run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'npm config set cache /tmp && apk add bash curl gcompat shared-mime-info file && cd /home/node/app && /home/node/app/script/ci/unpack-and-test.sh'
-
-      - if: ${{ matrix.docker == true && matrix.alpine == true && matrix.arch == 'arm64' && matrix.node-version == 16 }}
-        name: test linux arm64 musl
-        run: docker run -v $PWD:/home/node/app --platform linux/${{ matrix.arch }} -e SKIP_STANDALONE_TESTS --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'npm config set cache /tmp && apk add bash curl libc6-compat gcompat shared-mime-info file protoc protobuf-dev && cd /home/node/app && /home/node/app/script/ci/unpack-and-test.sh'
+        run: docker run -v $PWD:/home --platform linux/${{ matrix.arch }} -e SKIP_STANDALONE_TESTS --rm node:${{ matrix.node-version }}-alpine bin/sh -c 'apk add bash curl shared-mime-info file protoc protobuf-dev && cd /home && /home/script/ci/unpack-and-test.sh'
         env:
           SKIP_STANDALONE_TESTS: true
 
