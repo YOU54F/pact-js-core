@@ -8,7 +8,8 @@ import { ServerOptions } from '.';
 const { expect } = chai;
 chai.use(chaiAsPromised);
 
-describe('Pact Spec', () => {
+const skipStandaloneTests = process.env['SKIP_STANDALONE_TESTS'] === 'true';
+(skipStandaloneTests ? describe.skip : describe)('Pact Spec', () => {
   afterEach(() => pact.removeAllServers());
 
   describe('Set Log Level', () => {
