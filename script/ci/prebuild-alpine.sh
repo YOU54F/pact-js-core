@@ -14,7 +14,8 @@ apk add bash curl python3 make g++
 rm -rf build node_modules
 npm ci --ignore-scripts
 export npm_config_target=${NODE_VERSION}
-npx --yes prebuildify@${PREBUILDIFY_VERSION} --napi --libc musl --tag-libc --name ${PREBUILD_NAME}
+ranlib ffi/*/libpact_ffi.a
+npx --yes prebuildify@${PREBUILDIFY_VERSION} --napi --libc musl --strip --tag-libc --name ${PREBUILD_NAME}
 ls prebuilds/**/*
 ARCH=$(uname -m | tr '[:upper:]' '[:lower:]')
 case $ARCH in
