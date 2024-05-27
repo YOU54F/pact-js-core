@@ -20,9 +20,9 @@ const { expect } = chai;
 
 const HOST = '127.0.0.1';
 
-const isWin = process.platform === 'win32';
-const isDarwinArm64 = process.platform === 'darwin' && process.arch === 'arm64';
-const usesOctetStream = isWin || isDarwinArm64;
+// const isWin = process.platform === 'win32';
+// const isDarwinArm64 = process.platform === 'darwin' && process.arch === 'arm64';
+// const usesOctetStream = isWin || isDarwinArm64;
 
 describe('FFI integration test for the HTTP Consumer API', () => {
   setLogLevel('trace');
@@ -75,9 +75,10 @@ describe('FFI integration test for the HTTP Consumer API', () => {
         .request({
           baseURL: `http://${HOST}:${port}`,
           headers: {
-            'content-type': usesOctetStream
-              ? 'application/octet-stream'
-              : 'application/gzip',
+            // 'content-type': usesOctetStream
+            //   ? 'application/octet-stream'
+            //   : 'application/gzip',
+            'content-type': 'application/gzip',
             Accept: 'application/json',
             'x-special-header': 'header',
           },
