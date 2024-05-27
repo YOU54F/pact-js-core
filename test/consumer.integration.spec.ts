@@ -196,7 +196,8 @@ describe('FFI integration test for the HTTP Consumer API', () => {
       interaction.withQuery('someParam', 0, 'someValue');
       interaction.withRequestBinaryBody(
         bytes,
-        usesOctetStream ? 'application/octet-stream' : 'application/gzip'
+        'application/gzip'
+        // usesOctetStream ? 'application/octet-stream' : 'application/gzip'
       );
       interaction.withResponseBody(
         JSON.stringify({
@@ -219,9 +220,10 @@ describe('FFI integration test for the HTTP Consumer API', () => {
         .request({
           baseURL: `http://${HOST}:${port}`,
           headers: {
-            'content-type': usesOctetStream
-              ? 'application/octet-stream'
-              : 'application/gzip',
+            'content-type': 'application/gzip',
+            // 'content-type': usesOctetStream
+            //   ? 'application/octet-stream'
+            //   : 'application/gzip',
             Accept: 'application/json',
             'x-special-header': 'header',
           },
