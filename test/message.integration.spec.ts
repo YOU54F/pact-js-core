@@ -13,13 +13,9 @@ import { setLogLevel } from '../src/logger';
 chai.use(chaiAsPromised);
 const { expect } = chai;
 
-const isWin = process.platform === 'win32';
-const isLinux = process.platform === 'linux';
-const isDarwinArm64 = process.platform === 'darwin' && process.arch === 'arm64';
-const isLinuxArm64 = process.platform === 'linux' && process.arch === 'arm64';
-const isCirrusCi = process.env['CIRRUS_CI'] === 'true';
-const usesOctetStream =
-  isLinuxArm64 || isWin || isDarwinArm64 || (isCirrusCi && isLinux);
+// const isWin = process.platform === 'win32';
+// const isDarwinArm64 = process.platform === 'darwin' && process.arch === 'arm64';
+// const usesOctetStream = isWin || isDarwinArm64;
 
 const getFeature = async (address: string, protoFile: string) => {
   const def = await load(protoFile);
@@ -104,7 +100,8 @@ describe('FFI integration test for the Message Consumer API', () => {
         message.givenWithParam('some state 2', 'state2 key', 'state2 val');
         message.withBinaryContents(
           bytes,
-          usesOctetStream ? 'application/octet-stream' : 'application/gzip'
+          // usesOctetStream ? 'application/octet-stream' : 'application/gzip'
+          'application/gzip'
         );
         message.withMetadata('meta-key', 'meta-val');
 
@@ -146,17 +143,24 @@ describe('FFI integration test for the Message Consumer API', () => {
       });
     });
 
-    describe.skip('with plugin contents (gRPC)', () => {
-      const protoFile = `${__dirname}/integration/grpc/route_guide.proto`;
+    const skipPluginTests = process.env['SKIP_PLUGIN_TESTS'] === 'true';
+    (skipPluginTests ? describe.skip : describe)(
+      'with plugin contents (gRPC)',
+      () => {
+        let protoFile = `${__dirname}/integration/grpc/route_guide.proto`;
+        if (process.platform === 'win32') {
+          const escapedProtoFile = protoFile.replace(/\\/g, '\\\\');
+          protoFile = escapedProtoFile;
+        }
 
-      let port: number;
+        let port: number;
 
-      afterEach(() => {
-        pact.cleanupPlugins();
-      });
+        afterEach(() => {
+          pact.cleanupPlugins();
+        });
 
-      beforeEach(() => {
-        const grpcInteraction = `{
+        beforeEach(() => {
+          const grpcInteraction = `{
           "pact:proto": "${protoFile}",
           "pact:proto-service": "RouteGuide/GetFeature",
           "pact:content-type": "application/protobuf",
@@ -173,36 +177,37 @@ describe('FFI integration test for the Message Consumer API', () => {
           }
         }`;
 
-        pact.addMetadata('pact-node', 'meta-key', 'meta-val');
-        pact.addPlugin('protobuf', '0.1.14');
+          pact.addMetadata('pact-node', 'meta-key', 'meta-val');
+          pact.addPlugin('protobuf', '0.3.15');
 
-        const message = pact.newSynchronousMessage('a grpc test 1');
-        message.given('some state 1');
-        message.withPluginRequestResponseInteractionContents(
-          'application/protobuf',
-          grpcInteraction
-        );
-        message.withMetadata('meta-key 1', 'meta-val 2');
+          const message = pact.newSynchronousMessage('a grpc test 1');
+          message.given('some state 1');
+          message.withPluginRequestResponseInteractionContents(
+            'application/protobuf',
+            grpcInteraction
+          );
+          message.withMetadata('meta-key 1', 'meta-val 2');
 
-        port = pact.pactffiCreateMockServerForTransport(
-          '127.0.0.1',
-          'grpc',
-          ''
-        );
-      });
+          port = pact.pactffiCreateMockServerForTransport(
+            '127.0.0.1',
+            'grpc',
+            ''
+          );
+        });
 
-      it('generates a pact with success', async () => {
-        const feature: any = await getFeature(`127.0.0.1:${port}`, protoFile);
-        expect(feature.name).to.eq('Big Tree');
+        it('generates a pact with success', async () => {
+          const feature: any = await getFeature(`127.0.0.1:${port}`, protoFile);
+          expect(feature.name).to.eq('Big Tree');
 
-        const res = pact.mockServerMatchedSuccessfully(port);
-        expect(res).to.eq(true);
+          const res = pact.mockServerMatchedSuccessfully(port);
+          expect(res).to.eq(true);
 
-        const mismatches = pact.mockServerMismatches(port);
-        expect(mismatches.length).to.eq(0);
+          const mismatches = pact.mockServerMismatches(port);
+          expect(mismatches.length).to.eq(0);
 
-        pact.writePactFile(path.join(__dirname, '__testoutput__'));
-      });
-    });
+          pact.writePactFile(path.join(__dirname, '__testoutput__'));
+        });
+      }
+    );
   });
 });

@@ -9,7 +9,8 @@ import brokerMock from './integration/broker-mock';
 const { expect } = chai;
 chai.use(chaiAsPromised);
 
-describe('Publish Spec', () => {
+const skipStandaloneTests = process.env['SKIP_STANDALONE_TESTS'] === 'true';
+(skipStandaloneTests ? describe.skip : describe)('Publish Spec', () => {
   let server: http.Server;
   const PORT = Math.floor(Math.random() * 999) + 9000;
   const pactBrokerBaseUrl = `http://localhost:${PORT}`;

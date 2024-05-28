@@ -6,4 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)" # Figure out where the 
 . "$SCRIPT_DIR"/../lib/robust-bash.sh
 
 ./script/download-standalone.sh
+if [ "${SKIP_PLUGIN_TESTS:-"false"}" != "true" ]; then
+    ./script/download-plugins.sh
+fi;
 ./script/ci/build-and-test.sh

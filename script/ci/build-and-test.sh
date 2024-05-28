@@ -19,7 +19,6 @@ fi
 
 node --version
 npm --version
-
 npm ci --ignore-scripts
 
 npm run format:check

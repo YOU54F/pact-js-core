@@ -100,7 +100,7 @@ export class CanDeploy {
           ],
           this.__argMapping
         );
-        const output: Array<string | Buffer> = [];
+        let output: Array<string | Buffer> = [];
         if (instance.stdout && instance.stderr) {
           instance.stdout.on('data', (l) => output.push(l));
           instance.stderr.on('data', (l) => output.push(l));
@@ -110,9 +110,15 @@ export class CanDeploy {
 
           if (this.options.output === 'json') {
             try {
-              const startIndex = output.findIndex((l: string | Buffer) =>
-                l.toString().startsWith('{')
-              );
+              const findJsonIndex = (data: (string | Buffer)[]) =>
+                data.findIndex((l: string | Buffer) =>
+                  l.toString().startsWith('{')
+                );
+              let startIndex = findJsonIndex(output);
+              if (startIndex === -1) {
+                output = output.toString().split('\n');
+                startIndex = findJsonIndex(output);
+              }
               if (startIndex === -1) {
                 logger.error(
                   `can-i-deploy produced no json output:\n${result}`

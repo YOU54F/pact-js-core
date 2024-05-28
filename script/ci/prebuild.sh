@@ -34,7 +34,8 @@ npm --version
 echo "OS: $OS"
 echo "ARCH: $ARCH"
 
-./script/download-libs.sh
+. "${SCRIPT_DIR}/../lib/export-binary-versions.sh"
+"${SCRIPT_DIR}/../lib/download-ffi.sh"
 npm ci --ignore-scripts
 export npm_config_target=${NODE_VERSION}
 npx --yes prebuildify@${PREBUILDIFY_VERSION} --napi --name ${PREBUILD_NAME}
