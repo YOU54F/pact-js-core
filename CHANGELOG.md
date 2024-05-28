@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [15.0.1](https://github.com/pact-foundation/pact-js-core/compare/v15.0.0...v15.0.1) (2024-05-28)
+
+
+### Fixes and Improvements
+
+* refactor shell escaping, only on windows and escape cmd/pwsh args ([2b0700f](https://github.com/pact-foundation/pact-js-core/commit/2b0700f782a181ba6e39596285e2a9871ddf0398))
+* shell escaping on non windows platforms ([d5ec9ea](https://github.com/pact-foundation/pact-js-core/commit/d5ec9ea387faa131e0b82fa247dfc33ab4b26dd7))
+
 ## [15.0.0](https://github.com/pact-foundation/pact-js-core/compare/v13.13.6...v15.0.0) (2024-05-28)
 
 
