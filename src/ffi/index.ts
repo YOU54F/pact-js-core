@@ -89,8 +89,8 @@ let ffiLogLevel: LogLevel;
 
 const initialiseFfi = (logLevel: LogLevel): typeof ffi => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore 
-  process.stdout._handle.setBlocking(true)
+  // @ts-ignore
+  process.stdout._handle.setBlocking(true);
   logger.debug(`Initalising native core at log level '${logLevel}'`);
   ffiLogLevel = logLevel;
   try {
