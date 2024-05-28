@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [15.0.2](https://github.com/pact-foundation/pact-js-core/compare/v15.0.1...v15.0.2) (2024-05-28)
+
+
+### Fixes and Improvements
+
+* ffi process.stdout._handle.setBlocking(true) ([6b1b61b](https://github.com/pact-foundation/pact-js-core/commit/6b1b61bfdf29ef2987547864df34a4ff08cc80de))
+
 ## [15.0.1](https://github.com/pact-foundation/pact-js-core/compare/v15.0.0...v15.0.1) (2024-05-28)
 
 
