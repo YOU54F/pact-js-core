@@ -89,9 +89,15 @@
                     {
                         "link_settings": {
                             "libraries": [
-                                "<(module_root_dir)/ffi/linux-x86_64/libpact_ffi.a"
+                                "-lpact_ffi_musl",
+                                "-L<(module_root_dir)/ffi/linux-musl-x86_64/",
+                                "-Wl,-rpath,'$$ORIGIN'"
                             ]
                         },
+                        "copies": [{
+                            "files": ["<(module_root_dir)/ffi/linux-musl-x86_64/libpact_ffi_musl.so"],
+                            "destination": "<(PRODUCT_DIR)"
+                        }],
                     }
                 ],
                 [
@@ -99,9 +105,15 @@
                     {
                         "link_settings": {
                             "libraries": [
-                                "<(module_root_dir)/ffi/linux-aarch64/libpact_ffi.a"
+                                "-lpact_ffi_musl",
+                                "-L<(module_root_dir)/ffi/linux-musl-aarch64/",
+                                "-Wl,-rpath,'$$ORIGIN'"
                             ]
                         },
+                        "copies": [{
+                            "files": ["<(module_root_dir)/ffi/linux-musl-aarch64/libpact_ffi_musl.so"],
+                            "destination": "<(PRODUCT_DIR)"
+                        }],
                     }
                 ],
                 [

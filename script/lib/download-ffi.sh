@@ -20,9 +20,11 @@ warn "Cleaning ffi directory $FFI_DIR"
 rm -rf "${FFI_DIR:?}"
 mkdir -p "$FFI_DIR/osx-x86_64"
 mkdir -p "$FFI_DIR/linux-x86_64"
+mkdir -p "$FFI_DIR/linux-musl-x86_64"
 mkdir -p "$FFI_DIR/windows-x86_64"
 mkdir -p "$FFI_DIR/osx-aarch64"
 mkdir -p "$FFI_DIR/linux-aarch64"
+mkdir -p "$FFI_DIR/linux-musl-aarch64"
 
 function download_ffi_file {
   if [ -z "${1:-}" ]; then
@@ -65,8 +67,8 @@ fi
 if [ -z "${ONLY_DOWNLOAD_PACT_FOR_WINDOWS:-}" ]; then
   download_ffi "linux-x86_64.so.gz" "lib" "linux-x86_64/libpact_ffi.so.gz"
   download_ffi "linux-aarch64.so.gz" "lib" "linux-aarch64/libpact_ffi.so.gz"
-  download_ffi "linux-x86_64-musl.a.gz" "lib" "linux-x86_64/libpact_ffi.a.gz"
-  download_ffi "linux-aarch64-musl.a.gz" "lib" "linux-aarch64/libpact_ffi.a.gz"
+  download_ffi "linux-x86_64-musl.so.gz" "lib" "linux-musl-x86_64/libpact_ffi_musl.so.gz"
+  download_ffi "linux-aarch64-musl.so.gz" "lib" "linux-musl-aarch64/libpact_ffi_musl.so.gz"
   download_ffi "osx-x86_64.dylib.gz" "lib" "osx-x86_64/libpact_ffi.dylib.gz"
   download_ffi "osx-aarch64-apple-darwin.dylib.gz" "lib" "osx-aarch64/libpact_ffi.dylib.gz"
 else
