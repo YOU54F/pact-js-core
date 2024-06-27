@@ -1,3 +1,7 @@
+# platform-arch specific packages
+@you54f/*
+@pact-foundation/*
+
 # Logs
 logs
 npm-debug.log

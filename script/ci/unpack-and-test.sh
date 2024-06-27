@@ -10,5 +10,7 @@ ls -1 artifact
 mkdir -p prebuilds
 mv artifact*/*.tar.gz . || echo "no mac prebuilds"
 ls *.gz |xargs -n1 tar -xzf
+make all
+make link
 "$SCRIPT_DIR"/../download-plugins.sh
 "$SCRIPT_DIR"/build-and-test.sh
