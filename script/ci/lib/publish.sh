@@ -14,12 +14,19 @@ echo "--> Releasing artifacts"
 echo "    Publishing pact-core@${VERSION}..."
 if [[ ${DRY_RUN:-} == 'true' ]]; then
   echo "publishing in dry run mode"
+  # Dry-run Publish os/arch specific npm packages
+  make dry_run
+  # Update main package.json optional dependencies versions, with those created earlier
+  make update_opt_deps
   npm publish --access-public --dry-run
  else
   echo "--> Preparing npmrc file"
   "$SCRIPT_DIR"/create_npmrc_file.sh
   echo "--> Removing binding.gyp to prevent rebuild. See https://github.com/npm/cli/issues/5234#issuecomment-1291139150"
   rm "${SCRIPT_DIR}/../../../binding.gyp"
+  # Update main package.json optional dependencies versions, with those created earlier
+  make publish
+  make update_opt_deps
   npm publish --access public --tag latest
 fi
 echo "    done!"

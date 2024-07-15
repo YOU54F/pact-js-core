@@ -6,6 +6,30 @@ import { Ffi } from './types';
 
 export const PACT_FFI_VERSION = '0.4.21';
 
+/**
+ * Returns the library path which is located inside `node_modules`
+ * The naming convention is @pact-foundation/pact-core-${os}-${arch}
+ * @see https://nodejs.org/api/os.html#osarch
+ * @see https://nodejs.org/api/os.html#osplatform
+ * @example "x/xx/node_modules/@pact-foundation/pact-core-darwin-arm64"
+ */
+function getPlatformArchSpecificPackage() {
+  const { arch } = process;
+  let os = process.platform as string;
+  if (['win32', 'cygwin'].includes(process.platform)) {
+    os = 'windows';
+  }
+  const platformArchSpecificPackage = `@pact-foundation/pact-core-${os}-${arch}`;
+  try {
+    require.resolve(`${platformArchSpecificPackage}/package.json`);
+    return platformArchSpecificPackage;
+  } catch (e) {
+    throw new Error(
+      `Couldn't find application binary for ${os}-${arch}:\n 💡 npm install --save-dev ${platformArchSpecificPackage}`
+    );
+  }
+}
+
 // supported prebuilds
 // darwin-arm64
 // darwin-x64
@@ -54,7 +78,13 @@ const bindingsResolver = (bindingsPath: string | undefined) =>
   bindings(bindingsPath);
 
 const bindingPaths = [
-  path.resolve(__dirname, '..', '..'),
+  path.resolve(
+    __dirname,
+    '..',
+    '..',
+    'node_modules',
+    getPlatformArchSpecificPackage()
+  ),
   process.env['PACT_PREBUILD_LOCATION']?.toString() ?? path.resolve(),
 ];
 let ffiLib: Ffi;

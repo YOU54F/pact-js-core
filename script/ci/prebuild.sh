@@ -1,4 +1,4 @@
-# !/bin/bash -eu
+#!/bin/bash -eu
 set -e # This needs to be here for windows bash, which doesn't read the #! line above
 set -u
 
