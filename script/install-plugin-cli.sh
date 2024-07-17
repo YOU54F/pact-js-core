@@ -39,13 +39,13 @@ detect_osarch() {
 }
 
 
-VERSION="0.1.2"
+VERSION="0.2.2"
 detect_osarch
 
 if [ ! -f ~/.pact/bin/pact-plugin-cli ]; then
     echo "--- 🐿  Installing plugins CLI version '${VERSION}' (from tag ${TAG})"
     mkdir -p ~/.pact/bin
-    DOWNLOAD_LOCATION=https://github.com/pact-foundation/pact-plugins/releases/download/pact-plugin-cli-v${VERSION}/pact-plugin-cli-${os}-${arch}${ext}.gz
+    DOWNLOAD_LOCATION=https://github.com/you54f/pact-plugins/releases/download/pact-plugin-cli-v${VERSION}/pact-plugin-cli-${os}-${arch}${ext}.gz
     echo "        Downloading from: ${DOWNLOAD_LOCATION}"
     curl -L -o ~/.pact/bin/pact-plugin-cli-${os}-${arch}.gz "${DOWNLOAD_LOCATION}"
     echo "        Downloaded $(file ~/.pact/bin/pact-plugin-cli-${os}-${arch}.gz)"
