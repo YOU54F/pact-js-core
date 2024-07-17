@@ -41,6 +41,9 @@ const startTCPServer = (host: string, port: number) => {
       }
       sock.write('\n');
     });
+    sock.on('error', (err) =>
+      console.error(Error(`${err.message}`))
+    );
   });
 
   return new Promise((resolve) => {
