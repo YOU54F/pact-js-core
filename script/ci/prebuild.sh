@@ -34,7 +34,7 @@ npm --version
 echo "OS: $OS"
 echo "ARCH: $ARCH"
 
-# ./script/download-libs.sh
+./script/download-libs.sh
 npm ci --ignore-scripts
 export npm_config_target=${NODE_VERSION}
 npx --yes prebuildify@${PREBUILDIFY_VERSION} --napi --name ${PREBUILD_NAME}
@@ -90,4 +90,4 @@ case $OS in
     ;;
 esac
 ls
-# rm -rf ffi build
+rm -rf ffi build
