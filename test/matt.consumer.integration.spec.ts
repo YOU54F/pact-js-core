@@ -38,7 +38,9 @@ const sendMattMessageTCP = (
   return new Promise((resolve) => {
     socket.on('data', (data) => {
       resolve(parseMattMessage(data.toString()));
-      socket.end();
+      // required to pass on windows
+      // can call socket.end() instead of destroy if targeting node 18+
+      socket.destroy();
     });
   });
 };
