@@ -39,9 +39,7 @@ const sendMattMessageTCP = (
     socket.on('data', (data) => {
       resolve(parseMattMessage(data.toString()));
     });
-    socket.on('error', (err) =>
-      reject(Error(err.message))
-    );
+    socket.on('error', (err) => reject(Error(err.message)));
   });
 };
 
