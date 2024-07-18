@@ -35,11 +35,11 @@ const sendMattMessageTCP = (
     throw Error('unable to connect to host');
   }
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     socket.on('data', (data) => {
       resolve(parseMattMessage(data.toString()));
+      socket.end();
     });
-    socket.on('error', (err) => reject(Error(err.message)));
   });
 };
 
