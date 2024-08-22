@@ -165,7 +165,7 @@ describe('FFI integration test for the Message Consumer API', () => {
         }`;
 
           pact.addMetadata('pact-node', 'meta-key', 'meta-val');
-          pact.addPlugin('protobuf', '0.3.15');
+          pact.addPlugin('protobuf', '0.5.1');
 
           const message = pact.newSynchronousMessage('a grpc test 1');
           message.given('some state 1');
