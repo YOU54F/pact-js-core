@@ -4,7 +4,7 @@ import logger, { DEFAULT_LOG_LEVEL } from '../logger';
 import { LogLevel } from '../logger/types';
 import { Ffi } from './types';
 
-export const PACT_FFI_VERSION = '0.4.22';
+export const PACT_FFI_VERSION = '0.4.33';
 
 // supported prebuilds
 // darwin-arm64
