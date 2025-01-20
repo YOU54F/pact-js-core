@@ -47,10 +47,6 @@ jobs:
             arch: arm64
           - os: ubuntu-24.04-arm
             docker: true
-            alpine: false
-            arch: arm64
-          - os: ubuntu-24.04-arm
-            docker: true
             alpine: true
             arch: arm64
           - os: ubuntu-latest
