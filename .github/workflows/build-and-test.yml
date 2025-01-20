@@ -35,13 +35,16 @@ jobs:
         os: [
             macos-13,
             ubuntu-latest,
-            windows-latest,
-            ubuntu-24.04-arm
+            windows-latest
           ]
         docker: [false]
         alpine: [false]
         arch: ['amd64']
         include:
+          - os: ubuntu-24.04-arm
+            docker: false
+            alpine: false
+            arch: arm64
           - os: ubuntu-24.04-arm
             docker: true
             alpine: false
