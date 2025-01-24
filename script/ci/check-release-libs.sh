@@ -52,7 +52,7 @@ esac
 done
 
 # Set default values for REPO and TAG if not provided
-REPO=${REPO:-pact-foundation/pact-js-core}
+REPO=${REPO:-you54f/pact-js-core}
 TAG=${NEXT_TAG:-${TAG:-latest}}
 
 echo "Checking release assets"

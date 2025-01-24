@@ -16,7 +16,7 @@ else
     git config user.name "${GITHUB_ACTOR}"
   fi
 fi
-REPO=${REPO:-pact-foundation/pact-js-core}
+REPO=${REPO:-you54f/pact-js-core}
 
 # It's easier to read the release notes
 # from the standard version tool before it runs
@@ -47,17 +47,7 @@ if [ "${GH_CREATE_PRE_RELEASE:-}" = true ]; then
   echo "echo shouldnt get here"
   exit 0
 elif [ "${GH_PRE_RELEASE_UPLOAD:-}" = true ]; then
-
   echo "Uploading pre-release ${NEXT_TAG}"
-  echo "get latest Draft pre-release"
-  if [[ ${CIRRUS_CI:-} == 'true' && ${CIRRUS_BRANCH:-} != 'master' ]]; then
-    echo "Not on master in CIRRUS_CI, skipping pre-release upload"
-    exit 0
-  fi
-  if [[ ${CIRRUS_CI:-} == 'true' ]]; then
-    LATEST_DRAFT_PRERELEASE=$(gh release list --limit 1 --repo $REPO | grep Draft | awk '{print $2}')
-    NEXT_TAG=${LATEST_DRAFT_PRERELEASE}
-  fi
   gh release upload ${NEXT_TAG} prebuilds/*.tar.gz --repo ${REPO} --clobber
   exit 0
 fi
@@ -80,6 +70,9 @@ fi
 
 FETCH_ASSETS=true ./script/ci/check-release-libs.sh --fetch-assets -t "${NEXT_TAG}"
 "$SCRIPT_DIR"/../download-plugins.sh
+export pkg_version=$NEXT_VERSION
+"$SCRIPT_DIR"/build-opt-dependencies.sh build
+"$SCRIPT_DIR"/build-opt-dependencies.sh update
 "$SCRIPT_DIR"/build-and-test.sh
 
 if [[ ${DRY_RUN:-} == 'true' ]]; then

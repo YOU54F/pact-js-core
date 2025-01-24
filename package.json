@@ -1,9 +1,9 @@
 {
-  "name": "@pact-foundation/pact-core",
+  "name": "@you54f/pact-core",
   "version": "15.2.1",
-  "description": "Core of @pact-foundation/pact. You almost certainly don't want to depend on this directly.",
+  "description": "Core of @you54f/pact. You almost certainly don't want to depend on this directly.",
   "main": "src/index.js",
-  "homepage": "https://github.com/pact-foundation/pact-js-core#readme",
+  "homepage": "https://github.com/you54f/pact-js-core#readme",
   "types": "src/index.d.ts",
   "os": [
     "darwin",
@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/pact-foundation/pact-js-core.git"
+    "url": "git://github.com/you54f/pact-js-core.git"
   },
   "keywords": [
     "pact",
@@ -37,13 +37,23 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pact-foundation/pact-js-core/issues"
+    "url": "https://github.com/you54f/pact-js-core/issues"
   },
   "publishConfig": {
     "access": "public"
   },
+  "optionalDependencies": {
+    "@you54f/pact-core-darwin-arm64": "15.2.1",
+    "@you54f/pact-core-darwin-x64": "15.2.1",
+    "@you54f/pact-core-linux-arm64-glibc": "15.2.1",
+    "@you54f/pact-core-linux-arm64-musl": "15.2.1",
+    "@you54f/pact-core-linux-x64-glibc": "15.2.1",
+    "@you54f/pact-core-linux-x64-musl": "15.2.1",
+    "@you54f/pact-core-windows-x64": "15.2.1"
+  },
   "dependencies": {
     "check-types": "7.4.0",
+    "detect-libc": "^2.0.3",
     "node-gyp-build": "^4.6.0",
     "pino": "^8.7.0",
     "pino-pretty": "^9.1.1",
