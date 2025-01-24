@@ -5,11 +5,13 @@ set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)" # Figure out where the script is running
 . "$SCRIPT_DIR"/../lib/robust-bash.sh
 
-ls -1
-ls -1 artifact*
-mkdir -p prebuilds
-mv artifact*/*.tar.gz .
-ls *.gz |xargs -n1 tar -xzf
+if [ ! -d "prebuilds" ]; then
+    ls -1
+    ls -1 artifact*
+    mkdir -p prebuilds
+    mv artifact*/*.tar.gz .
+    ls *.gz | xargs -n1 tar -xzf
+fi
 
 "$SCRIPT_DIR"/../download-plugins.sh
 # Use the determined platform
