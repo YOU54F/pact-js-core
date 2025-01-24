@@ -93,6 +93,7 @@ jobs:
 
       - name: Upload prebuild for ${{ runner.os }}-${{ runner.arch }}
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
+        if: github.ref == 'refs/heads/master'
         with:
           path: prebuilds/*.tar.gz
           name: artifact-${{ matrix.docker == true && matrix.alpine == true && 'linux-musl' || matrix.docker == true && matrix.alpine == false && 'linux' || matrix.os }}-${{ matrix.arch }}
@@ -158,10 +159,10 @@ jobs:
           fetch-depth: 0
 
       - name: Download prebuilds
-        if: github.ref == 'refs/heads/master' 
+        if: github.ref == 'refs/heads/master'
         uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
-      - run: FETCH_ASSETS=true REPO=you54f/pact-js-core ./script/ci/check-release-libs.sh --fetch-assets -t
-        if: github.ref != 'refs/heads/master' 
+      - run: FETCH_ASSETS=true REPO=you54f/pact-js-core ./script/ci/check-release-libs.sh --fetch-assets
+        if: github.ref != 'refs/heads/master'
         env:
             GITHUB_TOKEN: ${{ github.token }}
 

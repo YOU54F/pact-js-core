@@ -91,7 +91,11 @@ else
   VERSION="$("$SCRIPT_DIR/lib/get-version.sh")"
   TAG="v${VERSION}"
 fi
-echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+export VERSION
+set +eu
+# GITHUB_OUPUT is unset if testing DRY_RUN locally
+echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+set -eu
 "$SCRIPT_DIR"/lib/publish.sh
 
 # Push the new commit back to the repo.
