@@ -1,6 +1,6 @@
 {
   "name": "@you54f/pact-core",
-  "version": "16.0.0",
+  "version": "17.0.0",
   "description": "Core of @you54f/pact. You almost certainly don't want to depend on this directly.",
   "main": "src/index.js",
   "homepage": "https://github.com/you54f/pact-js-core#readme",
@@ -43,13 +43,13 @@
     "access": "public"
   },
   "optionalDependencies": {
-    "@you54f/pact-core-darwin-arm64": "16.0.0",
-    "@you54f/pact-core-darwin-x64": "16.0.0",
-    "@you54f/pact-core-linux-arm64-glibc": "16.0.0",
-    "@you54f/pact-core-linux-arm64-musl": "16.0.0",
-    "@you54f/pact-core-linux-x64-glibc": "16.0.0",
-    "@you54f/pact-core-linux-x64-musl": "16.0.0",
-    "@you54f/pact-core-windows-x64": "16.0.0"
+    "@you54f/pact-core-darwin-arm64": "17.0.0",
+    "@you54f/pact-core-darwin-x64": "17.0.0",
+    "@you54f/pact-core-linux-arm64-glibc": "17.0.0",
+    "@you54f/pact-core-linux-arm64-musl": "17.0.0",
+    "@you54f/pact-core-linux-x64-glibc": "17.0.0",
+    "@you54f/pact-core-linux-x64-musl": "17.0.0",
+    "@you54f/pact-core-windows-x64": "17.0.0"
   },
   "dependencies": {
     "check-types": "7.4.0",
