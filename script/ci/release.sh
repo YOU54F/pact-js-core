@@ -91,7 +91,6 @@ else
   VERSION="$("$SCRIPT_DIR/lib/get-version.sh")"
   TAG="v${VERSION}"
 fi
-
 "$SCRIPT_DIR"/lib/publish.sh
 
 # Push the new commit back to the repo.
