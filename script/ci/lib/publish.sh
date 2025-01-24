@@ -6,8 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)" # Figure out where the 
 
 require_binary npm
 
-VERSION="$("$SCRIPT_DIR/get-version.sh")"
-echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+# VERSION="$("$SCRIPT_DIR/get-version.sh")"
 echo "--> Releasing version ${VERSION}"
 
 echo "--> Releasing artifacts"

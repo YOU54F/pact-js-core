@@ -91,6 +91,7 @@ else
   VERSION="$("$SCRIPT_DIR/lib/get-version.sh")"
   TAG="v${VERSION}"
 fi
+echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
 "$SCRIPT_DIR"/lib/publish.sh
 
 # Push the new commit back to the repo.
