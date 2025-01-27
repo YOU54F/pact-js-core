@@ -97,3 +97,4 @@ tsconfig.json
 # Cross packaging files
 Makefile
 package.json.tmpl
+prebuilds
