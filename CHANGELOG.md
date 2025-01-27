@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [17.0.1](https://github.com/you54f/pact-js-core/compare/v17.0.0...v17.0.1) (2025-01-27)
+
+
+### Fixes and Improvements
+
+* ignore prebuilds from main npm package ([04a2f51](https://github.com/you54f/pact-js-core/commit/04a2f5194a0b3697048937e2737415bd69c7e2b5))
+
 ## [17.0.0](https://github.com/you54f/pact-js-core/compare/v13.13.6...v17.0.0) (2025-01-24)
 
 
