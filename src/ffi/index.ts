@@ -36,8 +36,9 @@ function getPlatformArchSpecificPackage() {
 
   const packagePath = `${platformArchSpecificPackage}/package.json`;
   try {
-    require.resolve(packagePath);
-    return platformArchSpecificPackage;
+    let resolvedPackagePath = require.resolve(packagePath);
+    resolvedPackagePath = resolvedPackagePath.replace('/package.json', '');
+    return resolvedPackagePath;
   } catch (e) {
     throw new Error(
       `Couldn't find npm package ${platformArchSpecificPackage} \n 💡 you can tell Pact where the npm package is located with env var $PACT_PREBUILD_PACKAGE_LOCATION`
@@ -93,14 +94,7 @@ const bindingsResolver = (bindingsPath: string | undefined) =>
   bindings(bindingsPath);
 
 const bindingPaths = [
-  path.resolve(
-    __dirname,
-    '..',
-    '..',
-    'node_modules',
-    getPlatformArchSpecificPackage()
-  ),
-  path.resolve(__dirname, '..', '..'),
+  path.resolve(getPlatformArchSpecificPackage()),
   process.env['PACT_PREBUILD_LOCATION']?.toString() ?? path.resolve(),
 ];
 let ffiLib: Ffi;
