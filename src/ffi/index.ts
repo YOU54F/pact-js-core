@@ -37,7 +37,11 @@ function getPlatformArchSpecificPackage() {
   const packagePath = `${platformArchSpecificPackage}/package.json`;
   try {
     let resolvedPackagePath = require.resolve(packagePath);
-    resolvedPackagePath = resolvedPackagePath.replace('/package.json', '');
+    if (os === 'win32') {
+      resolvedPackagePath = resolvedPackagePath.replace('\\package.json', '');
+    } else {
+      resolvedPackagePath = resolvedPackagePath.replace('/package.json', '');
+    }
     return resolvedPackagePath;
   } catch (e) {
     throw new Error(
