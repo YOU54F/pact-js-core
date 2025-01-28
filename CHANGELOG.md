@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [17.0.4](https://github.com/you54f/pact-js-core/compare/v17.0.3...v17.0.4) (2025-01-28)
+
+
+### Fixes and Improvements
+
+* **win:** use backslash on windows package lookup ([064bfd9](https://github.com/you54f/pact-js-core/commit/064bfd9d3c3aa1052eb083959447b10b603e4541))
+
 ## [17.0.3](https://github.com/you54f/pact-js-core/compare/v17.0.2...v17.0.3) (2025-01-28)
 
 
