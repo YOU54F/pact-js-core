@@ -81,21 +81,29 @@ InteractionPart integerToInteractionPart(Napi::Env &env, uint32_t number) {
  *     const char *pactffi_fetch_log_buffer(const char *log_id);
  */
 Napi::Value PactffiFetchLogBuffer(const Napi::CallbackInfo& info) {
-   Napi::Env env = info.Env();
+  Napi::Env env = info.Env();
 
-  if (info.Length() < 1) {
-    throw Napi::Error::New(env, "PactffiFetchLogBuffer received < 1 arguments");
+  // The log_id is optional: without it the "global" buffer is fetched
+  std::string log_id;
+  bool has_log_id = info.Length() > 0 && !info[0].IsUndefined() && !info[0].IsNull();
+
+  if (has_log_id) {
+    if (!info[0].IsString()) {
+      throw Napi::Error::New(env, "PactffiFetchLogBuffer(log_id) expected a string");
+    }
+    log_id = info[0].As<Napi::String>().Utf8Value();
   }
 
-  if (!info[0].IsString()) {
-    throw Napi::Error::New(env, "PactffiFetchLogBuffer(log_id) expected a string");
+  const char* buffer = pactffi_fetch_log_buffer(has_log_id ? log_id.c_str() : NULL);
+
+  if (buffer == NULL) {
+    return env.Null();
   }
 
-  std::string log_id = info[0].As<Napi::String>().Utf8Value();
+  Napi::String result = Napi::String::New(env, buffer);
+  pactffi_string_delete((char*)buffer);
 
-  const char* buffer = pactffi_fetch_log_buffer(log_id.c_str());
-
-  return Napi::String::New(env, buffer);
+  return result;
 }
 
 /**
@@ -184,6 +192,39 @@ Napi::Value PactffiMockServerMismatches(const Napi::CallbackInfo& info) {
   int32_t port = info[0].As<Napi::Number>().Int32Value();
   char* res = pactffi_mock_server_mismatches(port);
 
+  return Napi::String::New(env, res);
+}
+
+/**
+ * Fetch the logs for the mock server. This needs the memory buffer log sink to be setup before
+ * the mock server is started. Returned string will be freed with the `cleanup_mock_server`
+ * function call.
+ *
+ * Will return a NULL pointer if the logs for the mock server can not be retrieved.
+ *
+ * C interface:
+ *
+ *    const char *pactffi_mock_server_logs(int32_t mock_server_port);
+ */
+Napi::Value PactffiMockServerLogs(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() < 1) {
+    throw Napi::Error::New(env, "PactffiMockServerLogs received < 1 arguments");
+  }
+
+  if (!info[0].IsNumber()) {
+    throw Napi::Error::New(env, "PactffiMockServerLogs(port) expected a number");
+  }
+
+  int32_t port = info[0].As<Napi::Number>().Int32Value();
+  const char* res = pactffi_mock_server_logs(port);
+
+  if (res == NULL) {
+    return env.Null();
+  }
+
+  // Owned by the mock server, and freed by pactffi_cleanup_mock_server
   return Napi::String::New(env, res);
 }
 

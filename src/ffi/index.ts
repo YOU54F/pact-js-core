@@ -165,9 +165,23 @@ const initialiseFfi = (): typeof ffi => {
   return ffiLib;
 };
 
+/**
+ * Returns the native library, initialising it on the first call.
+ *
+ * The native core only takes its log configuration once per process, so the
+ * `logLevel`, `logFile` and `logToBuffer` arguments only take effect on the
+ * first call.
+ *
+ * @param logLevel the level the native core logs at
+ * @param logFile write the native core logs to this file
+ * @param logToBuffer write the native core logs to an in-memory buffer, which
+ * can be read back with `pactffiFetchLogBuffer` and `pactffiMockServerLogs`.
+ * Takes precedence over `logFile`.
+ */
 export const getFfiLib = (
   logLevel: LogLevel = DEFAULT_LOG_LEVEL,
   logFile: string | undefined = undefined,
+  logToBuffer = false,
 ): typeof ffi => {
   if (!ffi) {
     logger.trace('Initialising ffi for the first time');
@@ -176,7 +190,18 @@ export const getFfiLib = (
       `Initialising native core at log level '${logLevel}'`,
       logFile,
     );
-    if (logFile) {
+    if (logToBuffer) {
+      if (logFile) {
+        logger.warn(
+          `Logging to an in-memory buffer, so not writing a log file to ${logFile}`,
+        );
+      }
+      logger.debug(`writing logs at level ${logLevel} to an in-memory buffer`);
+      const res = ffiLib.pactffiLogToBuffer(FfiLogLevelFilter[logLevel] ?? 3);
+      if (res !== 0) {
+        logger.warn(`Failed to log to an in-memory buffer, reason: ${res}`);
+      }
+    } else if (logFile) {
       logger.debug(`writing log file at level ${logLevel} to ${logFile}`);
       const res = ffiLib.pactffiLogToFile(
         logFile,
@@ -188,6 +213,10 @@ export const getFfiLib = (
     } else {
       ffiLib.pactffiInitWithLogLevel(logLevel);
     }
+  } else if (logToBuffer) {
+    logger.warn(
+      'The native core was already initialised, so its logs are not being written to an in-memory buffer',
+    );
   }
   return ffi;
 };

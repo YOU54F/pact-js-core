@@ -228,13 +228,24 @@ export type FfiConsumerFunctions = {
   pactffiCleanupMockServer(port: number): boolean;
   pactffiMockServerMatched(port: number): boolean;
   pactffiMockServerMismatches(port: number): string;
+  /**
+   * Returns the logs for the mock server, or null if they can't be fetched.
+   * The native core must be logging to a buffer (`pactffiLogToBuffer`) before
+   * the mock server is started, and the logs must be read before the mock
+   * server is cleaned up.
+   */
+  pactffiMockServerLogs(port: number): string | null;
   pactffiGetTlsCaCertificate(): string | null;
   pactffiLogMessage(source: string, logLevel: string, message: string): void;
   pactffiLogToBuffer(level: FfiLogLevelFilter): number;
   pactffiInitWithLogLevel(level: string): void;
   pactffiLogToStdout(level: FfiLogLevelFilter): number;
   pactffiLogToFile(fileName: string, level: FfiLogLevelFilter): number;
-  pactffiFetchLogBuffer(logId: number): string;
+  /**
+   * Returns the in-memory log buffer for the given log id, or the "global"
+   * buffer if no id is given. Returns null if the buffer can't be fetched.
+   */
+  pactffiFetchLogBuffer(logId?: string): string | null;
   pactffiUsingPlugin(
     handle: FfiPactHandle,
     name: string,
