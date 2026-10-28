@@ -107,6 +107,35 @@ Napi::Value PactffiLogToFile(const Napi::CallbackInfo& info) {
 
   return Napi::Number::New(env, res);
 }
+
+/**
+ * Convenience function to direct all logging to a task local memory buffer.
+ *
+ * The contents of the buffer can be fetched using `pactffi_fetch_log_buffer`, and the logs
+ * for a mock server with `pactffi_mock_server_logs`.
+ *
+ * C interface:
+ *
+ *     int pactffi_log_to_buffer(LevelFilter level_filter);
+ */
+Napi::Value PactffiLogToBuffer(const Napi::CallbackInfo& info) {
+  Napi::Env env = info.Env();
+
+  if (info.Length() < 1) {
+    throw Napi::Error::New(env, "PactffiLogToBuffer(levelFilter) received < 1 argument");
+  }
+
+  if (!info[0].IsNumber()) {
+    throw Napi::Error::New(env, "PactffiLogToBuffer(levelFilter) expected a number");
+  }
+
+  uint32_t levelFilterNumber = info[0].As<Napi::Number>().Uint32Value();
+  LevelFilter levelFilter = integerToLevelFilter(env, levelFilterNumber);
+
+  int res = pactffi_log_to_buffer(levelFilter);
+
+  return Napi::Number::New(env, res);
+}
 /*
 
 Napi::Value Pactffi_log_message(const Napi::CallbackInfo& info) {
