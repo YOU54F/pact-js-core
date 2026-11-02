@@ -949,9 +949,12 @@ Napi::Value PactffiWithRequest(const Napi::CallbackInfo& info) {
  * * `value` - the query parameter value.
  * * `index` - the index of the value (starts at 0). You can use this to create a query parameter with multiple values
  *
+ * The value may be a JSON matcher definition (e.g. from eachLike), which the v2 call
+ * parses. The deprecated v1 call stored it as a literal string (pact-js#1063).
+ *
  * C interface:
  *
- *    bool pactffi_with_query_parameter(InteractionHandle interaction, const char *name, size_t index, const char *value);
+ *    bool pactffi_with_query_parameter_v2(InteractionHandle interaction, const char *name, size_t index, const char *value);
  */
 Napi::Value PactffiWithQueryParameter(const Napi::CallbackInfo& info) {
    Napi::Env env = info.Env();
@@ -981,7 +984,7 @@ Napi::Value PactffiWithQueryParameter(const Napi::CallbackInfo& info) {
   size_t index = info[2].As<Napi::Number>().Uint32Value();
   std::string value = info[3].As<Napi::String>().Utf8Value();
 
-  bool res = pactffi_with_query_parameter(interaction, name.c_str(), index, value.c_str());
+  bool res = pactffi_with_query_parameter_v2(interaction, name.c_str(), index, value.c_str());
 
   return Napi::Boolean::New(env, res);
 }
