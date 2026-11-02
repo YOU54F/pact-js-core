@@ -227,14 +227,14 @@ export type FfiConsumerFunctions = {
   ): FfiWritePactResponse;
   pactffiCleanupMockServer(port: number): boolean;
   pactffiMockServerMatched(port: number): boolean;
-  pactffiMockServerMismatches(port: number): string;
+  pactffiMockServerMismatches(port: number): string | null;
   pactffiGetTlsCaCertificate(): string | null;
   pactffiLogMessage(source: string, logLevel: string, message: string): void;
   pactffiLogToBuffer(level: FfiLogLevelFilter): number;
   pactffiInitWithLogLevel(level: string): void;
   pactffiLogToStdout(level: FfiLogLevelFilter): number;
   pactffiLogToFile(fileName: string, level: FfiLogLevelFilter): number;
-  pactffiFetchLogBuffer(logId: number): string;
+  pactffiFetchLogBuffer(logId: number): string | null;
   pactffiUsingPlugin(
     handle: FfiPactHandle,
     name: string,
@@ -328,7 +328,7 @@ export type FfiConsumerFunctions = {
     key: string,
     value: string,
   ): void;
-  pactffiMessageReify(handle: FfiMessageHandle): string;
+  pactffiMessageReify(handle: FfiMessageHandle): string | null;
   pactffiGetAsyncMessageRequestContents(
     pact: FfiPactHandle,
     messageCount: number,

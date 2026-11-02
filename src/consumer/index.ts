@@ -13,8 +13,12 @@ import {
   logErrorAndThrow,
   setLogLevel,
 } from '../logger';
-import { wrapAllWithCheck, wrapWithCheck } from './checkErrors';
-import { mockServerMismatches, writePact } from './internals';
+import {
+  wrapAllWithCheck,
+  wrapAllWithResultCheck,
+  wrapWithCheck,
+} from './checkErrors';
+import { mockServerMismatches, reifyMessage, writePact } from './internals';
 import type {
   AsynchronousMessage,
   ConsumerInteraction,
@@ -76,60 +80,61 @@ const asyncMessage = (
   pactPtr: number,
   messageCount: number,
   index: number,
-) => ({
-  // todo count the number of messages (and ref them?)
-  // Required to get contents
-  withPluginRequestInteractionContents: (
-    contentType: string,
-    contents: string,
-  ) => {
-    return setPluginInteractionContents(
-      ffi,
-      interactionPtr,
-      INTERACTION_PART_REQUEST,
-      contentType,
-      contents,
-    );
-  },
-  expectsToReceive: (description: string) =>
-    ffi.pactffiMessageExpectsToReceive(interactionPtr, description),
-  given: (state: string) => ffi.pactffiMessageGiven(interactionPtr, state),
-  givenWithParam: (state: string, name: string, value: string) =>
-    ffi.pactffiMessageGivenWithParam(interactionPtr, state, name, value),
-  givenWithParams: (state: string, params: string) =>
-    ffi.pactffiMessageGivenWithParams(interactionPtr, state, params),
-  setPending: (pending: boolean) =>
-    ffi.pactffiSetPending(interactionPtr, pending),
-  setKey: (value: string) => ffi.pactffiSetKey(interactionPtr, value),
-  setComment: (key: string, value: string) =>
-    ffi.pactffiSetComment(interactionPtr, key, value),
-  addTextComment: (comment: string) =>
-    ffi.pactffiAddTextComment(interactionPtr, comment),
-  addInteractionReference: (group: string, name: string, value: string) =>
-    ffi.pactffiAddInteractionReference(interactionPtr, group, name, value),
-  setInteractionTestName: (name: string) =>
-    ffi.pactffiInteractionTestName(interactionPtr, name),
-  withContents: (body: string, contentType: string) =>
-    ffi.pactffiMessageWithContents(interactionPtr, contentType, body),
-  withBinaryContents: (body: Buffer, contentType: string) =>
-    ffi.pactffiMessageWithBinaryContents(
-      interactionPtr,
-      contentType,
-      body,
-      body.length,
-    ),
-  withMatchingRules: (rules: string) =>
-    ffi.pactffiWithMatchingRules(
-      interactionPtr,
-      INTERACTION_PART_REQUEST,
-      rules,
-    ),
-  reifyMessage: () => ffi.pactffiMessageReify(interactionPtr),
-  withMetadata: (name: string, value: string) =>
-    ffi.pactffiMessageWithMetadata(interactionPtr, name, value),
-  getRequestContents: () =>
-    ffi.pactffiGetAsyncMessageRequestContents(pactPtr, messageCount, index),
-});
+): AsynchronousMessage =>
+  wrapAllWithResultCheck<AsynchronousMessage>({
+    // todo count the number of messages (and ref them?)
+    // Required to get contents
+    withPluginRequestInteractionContents: (
+      contentType: string,
+      contents: string,
+    ) => {
+      return setPluginInteractionContents(
+        ffi,
+        interactionPtr,
+        INTERACTION_PART_REQUEST,
+        contentType,
+        contents,
+      );
+    },
+    expectsToReceive: (description: string) =>
+      ffi.pactffiMessageExpectsToReceive(interactionPtr, description),
+    given: (state: string) => ffi.pactffiMessageGiven(interactionPtr, state),
+    givenWithParam: (state: string, name: string, value: string) =>
+      ffi.pactffiMessageGivenWithParam(interactionPtr, state, name, value),
+    givenWithParams: (state: string, params: string) =>
+      ffi.pactffiMessageGivenWithParams(interactionPtr, state, params),
+    setPending: (pending: boolean) =>
+      ffi.pactffiSetPending(interactionPtr, pending),
+    setKey: (value: string) => ffi.pactffiSetKey(interactionPtr, value),
+    setComment: (key: string, value: string) =>
+      ffi.pactffiSetComment(interactionPtr, key, value),
+    addTextComment: (comment: string) =>
+      ffi.pactffiAddTextComment(interactionPtr, comment),
+    addInteractionReference: (group: string, name: string, value: string) =>
+      ffi.pactffiAddInteractionReference(interactionPtr, group, name, value),
+    setInteractionTestName: (name: string) =>
+      ffi.pactffiInteractionTestName(interactionPtr, name),
+    withContents: (body: string, contentType: string) =>
+      ffi.pactffiMessageWithContents(interactionPtr, contentType, body),
+    withBinaryContents: (body: Buffer, contentType: string) =>
+      ffi.pactffiMessageWithBinaryContents(
+        interactionPtr,
+        contentType,
+        body,
+        body.length,
+      ),
+    withMatchingRules: (rules: string) =>
+      ffi.pactffiWithMatchingRules(
+        interactionPtr,
+        INTERACTION_PART_REQUEST,
+        rules,
+      ),
+    reifyMessage: () => reifyMessage(ffi, interactionPtr),
+    withMetadata: (name: string, value: string) =>
+      ffi.pactffiMessageWithMetadata(interactionPtr, name, value),
+    getRequestContents: () =>
+      ffi.pactffiGetAsyncMessageRequestContents(pactPtr, messageCount, index),
+  });
 
 /**
  * Returns the PEM encoded CA certificate used by TLS mock servers, or null if it is
@@ -268,7 +273,7 @@ export const makeConsumerPact = (
       const index = messageCount;
       messageCount += 1;
 
-      return {
+      return wrapAllWithResultCheck<SynchronousMessage>({
         withPluginRequestInteractionContents: (
           contentType: string,
           contents: string,
@@ -382,7 +387,7 @@ export const makeConsumerPact = (
             messageCount,
             index,
           ),
-      };
+      });
     },
     pactffiCreateMockServerForTransport(
       address: string,
@@ -661,7 +666,7 @@ export const makeConsumerMessagePact = (
       // TODO: will this automatically set the correct spec version?
       const interactionPtr = ffi.pactffiNewSyncMessage(pactPtr, description);
 
-      return {
+      return wrapAllWithResultCheck<SynchronousMessage>({
         withPluginRequestInteractionContents: (
           contentType: string,
           contents: string,
@@ -775,7 +780,7 @@ export const makeConsumerMessagePact = (
             messageCount,
             index,
           ),
-      };
+      });
     },
     pactffiCreateMockServerForTransport(
       address: string,
