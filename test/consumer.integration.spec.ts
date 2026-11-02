@@ -762,4 +762,46 @@ describe('FFI integration test for the HTTP Consumer API', () => {
           pact.cleanupMockServer(port);
         }));
   });
+
+  describe('with a multipart response body', () => {
+    const f: string = path.resolve(__dirname, './monkeypatch.rb');
+    const boundary = 'pact-response-boundary';
+
+    beforeEach(() => {
+      pact = makeConsumerPact(
+        'multipart-response-consumer',
+        'multipart-response-provider',
+        FfiSpecificationVersion.SPECIFICATION_VERSION_V3,
+      );
+
+      const interaction = pact.newInteraction('multipart response');
+      interaction.uponReceiving('a request for a dog photo');
+      interaction.withRequest('GET', '/dogs/1234/photo');
+      interaction.withResponseMultipartBody('text/plain', f, 'photo', boundary);
+      interaction.withStatus(200);
+
+      port = pact.createMockServer(HOST);
+    });
+
+    afterEach(() => {
+      pact.cleanupMockServer(port);
+    });
+
+    it('sets the multipart body on the response, not the request', () =>
+      axios
+        .request({
+          baseURL: `http://${HOST}:${port}`,
+          method: 'GET',
+          url: '/dogs/1234/photo',
+          responseType: 'text',
+        })
+        .then((res) => {
+          expect(res.headers['content-type']).toContain(
+            `multipart/form-data; boundary=${boundary}`,
+          );
+          expect(res.data).toContain('name="photo"');
+          expect(res.data).toContain(fs.readFileSync(f, 'utf8'));
+          expect(pact.mockServerMatchedSuccessfully(port)).toBe(true);
+        }));
+  });
 });

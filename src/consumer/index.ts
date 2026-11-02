@@ -527,7 +527,7 @@ export const makeConsumerPact = (
             return (
               ffi.pactffiWithMultipartFile(
                 interactionPtr,
-                INTERACTION_PART_REQUEST,
+                INTERACTION_PART_RESPONSE,
                 contentType,
                 filename,
                 mimePartName,
@@ -537,7 +537,7 @@ export const makeConsumerPact = (
           return (
             ffi.pactffiWithMultipartFile(
               interactionPtr,
-              INTERACTION_PART_REQUEST,
+              INTERACTION_PART_RESPONSE,
               contentType,
               filename,
               mimePartName,
