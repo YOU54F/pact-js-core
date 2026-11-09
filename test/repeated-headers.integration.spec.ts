@@ -107,21 +107,15 @@ const cases: Record<string, Case> = {
   },
   H6b: {
     description:
-      'a quoted value containing a comma, sent as separate field lines',
+      'a quoted value whose whitespace differs, sent as separate field lines',
     header: 'X-Request',
+    // Whitespace inside a quoted string is literal (RFC 9110 §5.6.4), so
+    // "x , y" and "x, y" are different values
     expected: ['"x , y"', 'z'],
     sent: ['"x, y"', 'z'],
-    matches: true,
+    matches: false,
     log: (log) => {
-      const warnings = log
-        .split('\n')
-        .filter(
-          (line) => line.includes('WARN') && line.includes('RFC 9110 §5.3'),
-        );
-      expect(warnings).toHaveLength(1);
-      expect(warnings[0]).toContain(
-        'only matched when its field lines were compared one at a time',
-      );
+      expect(log).not.toMatch(/only matched when its field lines/);
     },
   },
   H8a: {
