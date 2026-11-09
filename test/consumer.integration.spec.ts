@@ -82,6 +82,42 @@ describe('FFI integration test for the HTTP Consumer API', () => {
         }));
   });
 
+  // pact-js#1063: a matcher on a query parameter must be parsed, not stored as a literal
+  describe('with a matcher on a repeated query parameter', () => {
+    beforeEach(() => {
+      pact = makeConsumerPact(
+        'foo-consumer',
+        'bar-provider',
+        FfiSpecificationVersion.SPECIFICATION_VERSION_V4,
+      );
+
+      const interaction = pact.newInteraction('some description');
+
+      interaction.uponReceiving('a request with repeated query values');
+      interaction.withRequest('GET', '/items');
+      interaction.withQuery(
+        'ids',
+        0,
+        JSON.stringify({ 'pact:matcher:type': 'type', min: 1, value: ['id'] }),
+      );
+      interaction.withStatus(200);
+
+      port = pact.createMockServer(HOST);
+    });
+
+    it('matches any number of values', () =>
+      axios
+        .get(`http://${HOST}:${port}/items?ids=a&ids=b`)
+        .then((res) => {
+          expect(res.status).toEqual(200);
+          expect(pact.mockServerMismatches(port)).toHaveLength(0);
+          expect(pact.mockServerMatchedSuccessfully(port)).toBe(true);
+        })
+        .finally(() => {
+          pact.cleanupMockServer(port);
+        }));
+  });
+
   describe('with JSON data', () => {
     beforeEach(() => {
       pact = makeConsumerPact(
