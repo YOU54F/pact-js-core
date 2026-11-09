@@ -74,10 +74,6 @@ jobs:
             docker: true
             alpine: true
             arch: amd64
-          - os: macos-14
-            docker: false
-            alpine: false
-            arch: arm64
     name: Prebuild ${{ matrix.docker == true && matrix.alpine == true && 'linux-musl' || matrix.docker == true && matrix.alpine == false && 'linux' || matrix.os }}-${{ matrix.arch }}
 
     env:
@@ -133,7 +129,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [22, 24, 26]
-        os: [macos-14, macos-15-intel, macos-latest, ubuntu-latest, windows-latest, ubuntu-24.04-arm]
+        os: [macos-15-intel, macos-latest, ubuntu-latest, windows-latest, ubuntu-24.04-arm]
         docker: [false]
         include:
           - os: ubuntu-24.04-arm
@@ -194,7 +190,7 @@ jobs:
 
       - if: runner.os == 'Windows'
         run: echo "ONLY_DOWNLOAD_PACT_FOR_WINDOWS=true" >> $GITHUB_ENV
-      - if: matrix.os == 'macos-14' ||  matrix.os == 'macos-latest'
+      - if: matrix.os == 'macos-latest'
         run: brew install protobuf
 
       - run: LOG_LEVEL=debug ./script/ci/unpack-and-test.sh
