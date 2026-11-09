@@ -10,9 +10,13 @@ export const mockServerMismatches = (
   ffi: Ffi,
   port: number,
 ): MatchingResult[] => {
-  const results: MatchingResult[] = JSON.parse(
-    ffi.pactffiMockServerMismatches(port),
-  );
+  const mismatches = ffi.pactffiMockServerMismatches(port);
+  if (mismatches === null) {
+    return logCrashAndThrow(
+      `The pact core couldn't return the mismatches for the mock server on port ${port}. The mock server may have already been cleaned up, or the core panicked`,
+    );
+  }
+  const results: MatchingResult[] = JSON.parse(mismatches);
   return results.map((result: MatchingResult) => ({
     ...result,
     ...('mismatches' in result
@@ -59,4 +63,14 @@ export const writePact = (
         `The pact core returned an unknown error code (${result}) instead of writing the pact`,
       );
   }
+};
+
+export const reifyMessage = (ffi: Ffi, interactionPtr: number): string => {
+  const reified = ffi.pactffiMessageReify(interactionPtr);
+  if (reified === null) {
+    return logCrashAndThrow(
+      'The pact core was unable to reify the message. Check that the message contents are valid',
+    );
+  }
+  return reified;
 };

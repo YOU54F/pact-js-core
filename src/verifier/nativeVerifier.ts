@@ -26,8 +26,18 @@ export const verify = (opts: VerifierOptions): Promise<string> => {
     ffi.pactffiVerifierExecute(handle, (err: Error, res: number) => {
       logger.debug(`shutting down verifier with handle ${handle}`);
 
-      const results = ffi.pactffiVerifierJson(handle);
-      ffi.pactffiVerifierShutdown(handle);
+      // This callback is called from native code, so an error thrown here would
+      // reach the user as "Error in native callback" instead of a rejection
+      let results: string;
+      try {
+        results = ffi.pactffiVerifierJson(handle);
+      } catch (e) {
+        logger.pactCrash(`Unable to read the verification results: ${e}`);
+        reject(e);
+        return;
+      } finally {
+        ffi.pactffiVerifierShutdown(handle);
+      }
 
       logger.debug(`response from verifier: ${err}, ${res}`);
       if (err) {

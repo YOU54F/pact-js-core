@@ -95,7 +95,14 @@ Napi::Value PactffiFetchLogBuffer(const Napi::CallbackInfo& info) {
 
   const char* buffer = pactffi_fetch_log_buffer(log_id.c_str());
 
-  return Napi::String::New(env, buffer);
+  if (buffer == NULL) {
+    return env.Null();
+  }
+
+  Napi::String logs = Napi::String::New(env, buffer);
+  pactffi_string_delete((char*)buffer);
+
+  return logs;
 }
 
 /**
@@ -183,6 +190,12 @@ Napi::Value PactffiMockServerMismatches(const Napi::CallbackInfo& info) {
 
   int32_t port = info[0].As<Napi::Number>().Int32Value();
   char* res = pactffi_mock_server_mismatches(port);
+
+  // NULL when there is no mock server on the port, or the core panicked.
+  // Napi::String::New(env, NULL) would throw "Error in native callback".
+  if (res == NULL) {
+    return env.Null();
+  }
 
   return Napi::String::New(env, res);
 }
@@ -1957,9 +1970,16 @@ Napi::Value PactffiMessageReify(const Napi::CallbackInfo& info) {
 
   MessageHandle handle = info[0].As<Napi::Number>().Uint32Value();
 
-  auto res = pactffi_message_reify(handle);
+  const char* res = pactffi_message_reify(handle);
 
-  return Napi::String::New(env, res);
+  if (res == NULL) {
+    return env.Null();
+  }
+
+  Napi::String reified = Napi::String::New(env, res);
+  pactffi_string_delete((char*)res);
+
+  return reified;
 }
 
 /**
