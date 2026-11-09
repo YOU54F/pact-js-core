@@ -6,7 +6,7 @@ import { type Ffi, FfiLogLevelFilter } from './types';
 
 const bindings = require('node-gyp-build') as (dir?: string) => Ffi;
 
-export const PACT_FFI_VERSION = '0.5.12';
+export const PACT_FFI_VERSION = '0.5.13-rc.1';
 
 /**
  * Returns the library path which is located inside `node_modules`
