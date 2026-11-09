@@ -9,10 +9,13 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set(Napi::String::New(env, "pactffiInit"), Napi::Function::New(env, PactffiInit));
   exports.Set(Napi::String::New(env, "pactffiInitWithLogLevel"), Napi::Function::New(env, PactffiInitWithLogLevel));
   exports.Set(Napi::String::New(env, "pactffiLogToFile"), Napi::Function::New(env, PactffiLogToFile));
+  exports.Set(Napi::String::New(env, "pactffiLogToBuffer"), Napi::Function::New(env, PactffiLogToBuffer));
+  exports.Set(Napi::String::New(env, "pactffiFetchLogBuffer"), Napi::Function::New(env, PactffiFetchLogBuffer));
 
   // Consumer
   exports.Set(Napi::String::New(env, "pactffiMockServerMatched"), Napi::Function::New(env, PactffiMockServerMatched));
   exports.Set(Napi::String::New(env, "pactffiMockServerMismatches"), Napi::Function::New(env, PactffiMockServerMismatches));
+  exports.Set(Napi::String::New(env, "pactffiMockServerLogs"), Napi::Function::New(env, PactffiMockServerLogs));
   exports.Set(Napi::String::New(env, "pactffiCreateMockServerForTransport"), Napi::Function::New(env, PactffiCreateMockServerForTransport));
   exports.Set(Napi::String::New(env, "pactffiCleanupMockServer"), Napi::Function::New(env, PactffiCleanupMockServer));
   exports.Set(Napi::String::New(env, "pactffiGetTlsCaCertificate"), Napi::Function::New(env, PactffiGetTlsCaCertificate));

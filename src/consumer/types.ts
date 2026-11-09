@@ -219,6 +219,14 @@ export type ConsumerPact = PluginPact & {
   ) => number;
   createMockServer: (address: string, port?: number, tls?: boolean) => number;
   mockServerMismatches: (port: number) => MatchingResult[];
+  /**
+   * Returns the native core logs for a mock server, or null if they can't be
+   * fetched. Only has contents if `logToBuffer` was called before the native
+   * core was first used. Read them before calling `cleanupMockServer`.
+   *
+   * @param port the port number the mock server is running on.
+   */
+  mockServerLogs: (port: number) => string | null;
   cleanupMockServer: (port: number) => boolean;
   /**
    * This function writes the pact file, regardless of whether or not the test was successful.

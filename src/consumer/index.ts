@@ -161,6 +161,31 @@ export const setTestRunId = (
   getFfiLib(logLevel, logFile).pactffiSetTestRunId(testRunId);
 };
 
+/**
+ * Sends the native core logs to an in-memory buffer instead of stdout or a
+ * log file, so that they can be read back in-process with `fetchLogBuffer` and
+ * `ConsumerPact.mockServerLogs`.
+ *
+ * The native core only takes its log configuration once per process, so this
+ * must be called before anything else that uses the native core (such as
+ * `makeConsumerPact`), otherwise it has no effect.
+ */
+export const logToBuffer = (logLevel = getLogLevel()): void => {
+  getFfiLib(logLevel, undefined, true);
+};
+
+/**
+ * Returns the contents of the native core's in-memory log buffer, or null if
+ * it can't be fetched. Logs from a mock server are kept in their own buffer,
+ * use `ConsumerPact.mockServerLogs` to read those.
+ *
+ * Only has contents if `logToBuffer` was called first.
+ *
+ * @param logId the buffer to fetch, defaults to the "global" buffer
+ */
+export const fetchLogBuffer = (logId?: string): string | null =>
+  getFfiLib().pactffiFetchLogBuffer(logId);
+
 export const makeConsumerPact = (
   consumer: string,
   provider: string,
@@ -245,6 +270,8 @@ export const makeConsumerPact = (
       ffi.pactffiMockServerMatched(port),
     mockServerMismatches: (port: number): MatchingResult[] =>
       mockServerMismatches(ffi, port),
+    mockServerLogs: (port: number): string | null =>
+      ffi.pactffiMockServerLogs(port),
     cleanupMockServer: (mockServerPort: number): boolean =>
       wrapWithCheck<(port: number) => boolean>(
         (port: number): boolean => ffi.pactffiCleanupMockServer(port),

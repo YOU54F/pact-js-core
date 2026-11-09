@@ -11,7 +11,7 @@ require_binary mktemp
 
 require_env_var FFI_VERSION
 
-BASEURL=https://github.com/pact-foundation/pact-reference/releases/download
+BASEURL=${PACT_FFI_BASEURL:-https://github.com/YOU54F/pact-reference/releases/download}
 FFI_DIR="${LIB_DIR}/../../ffi"
 
 if [[ $(find "${FFI_DIR}" -name "${FFI_VERSION}*") ]]; then
